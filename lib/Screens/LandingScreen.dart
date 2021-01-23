@@ -1,4 +1,6 @@
 import 'package:Mitra/Screens/Home.dart';
+import 'package:Mitra/Screens/OnBoarding/LoginScreen.dart';
+import 'package:Mitra/Screens/OnBoarding/RegisterScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:page_transition/page_transition.dart';
@@ -87,7 +89,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                 context,
                                 PageTransition(
                                     type: PageTransitionType.bottomToTop,
-                                    child: Home(index: 0)));
+                                    child: LoginScreen()));
                           },
                           color: white,
                           child: RichText(
@@ -117,7 +119,7 @@ class _LandingScreenState extends State<LandingScreen> {
                               context,
                               PageTransition(
                                 type: PageTransitionType.bottomToTop,
-                                child: Home(index: 0),
+                                child: RegisterScreen(),
                               ),
                             );
                           },
