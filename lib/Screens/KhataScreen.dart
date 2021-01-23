@@ -1,12 +1,12 @@
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
+class KhataScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _KhataScreenState createState() => _KhataScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _KhataScreenState extends State<KhataScreen> {
   @override
   void initState() {
     super.initState();
@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         title: Text(
-                          "Gupta Kirana",
+                          "Khata",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 18,

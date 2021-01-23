@@ -1,12 +1,12 @@
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
+class ChatbotScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _ChatbotScreenState createState() => _ChatbotScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ChatbotScreenState extends State<ChatbotScreen> {
   @override
   void initState() {
     super.initState();
@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         title: Text(
-                          "Gupta Kirana",
+                          "Chatbot",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 18,
