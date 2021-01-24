@@ -1,4 +1,5 @@
 import 'package:Mitra/Screens/Home.dart';
+import 'package:Mitra/Screens/Verification/KYCScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:Mitra/constants.dart';
 import 'package:page_transition/page_transition.dart';
@@ -152,6 +153,13 @@ class _OTPScreenState extends State<OTPScreen> {
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                           onPressed: () {
+                            if(this.mode == "Register")
+                            Navigator.pushReplacement(
+                                context,
+                                PageTransition(
+                                    type: PageTransitionType.leftToRightWithFade,
+                                    child: KYCScreen()));
+                            else
                             Navigator.pushReplacement(
                                 context,
                                 PageTransition(
