@@ -21,5 +21,6 @@ const MaterialColor primaryColor = const MaterialColor(
 const white = Colors.white;
 const grey = Colors.grey;
 const black = Colors.black;
+const error = Colors.red;
 const darkGrey = Color(0xffE7EBED);
 final server = "";

@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:Mitra/Screens/Home.dart';
+import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
+import 'package:Mitra/Services/KYC.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tesseract_ocr/tesseract_ocr.dart';
@@ -137,7 +138,11 @@ class _KYCScreenState extends State<KYCScreen> {
                               hintText: "Enter 12-digit aadhar number",
                             ),
                             onChanged: (value) {
+                              if (value.length >= 12){
+                                bool status = aadharCardVerification(value);
+                                if (status == true)
                                   this.aadharNo = value;
+                              }
                             },
                           ),
                         ),
@@ -148,11 +153,13 @@ class _KYCScreenState extends State<KYCScreen> {
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
                                 path = await getImage();
-                                setState(() {
-                                  aadharFront = File(path);
-                                });
-                                var _extractText = await TesseractOcr.extractText(path);
-                                print(_extractText);
+
+                                bool status = aadharCardMatch(path, this.aadharNo);
+                                if (status == true){
+                                  setState(() {
+                                    aadharFront = File(path);
+                                  });
+                                }
                               },
                               color: primaryColor,
                               child: RichText(
@@ -181,9 +188,7 @@ class _KYCScreenState extends State<KYCScreen> {
                                 setState(() {
                                   aadharBack  = File(path);
                                 });
-                                var _extractText = await TesseractOcr.extractText(path);
-                                print(_extractText);
-
+                                
                               },
                               color: primaryColor,
                               child: RichText(
@@ -334,25 +339,17 @@ class _KYCScreenState extends State<KYCScreen> {
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                           onPressed: () async {
-                            // final url = (server+"user/check_mobile/"+this.aadharNo);
-                            // Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
-                            // print(response.body);
-                            // bool status = jsonDecode(response.body)["status"];
-                            bool status = true;
-                            if (status == false){
-                              print("New User Login");
-                                  Fluttertoast.showToast(
-                                    msg: "Seems you are new here, please register",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM, 
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.grey[200],
-                                    textColor: primaryColor,
-                                    fontSize: 12.0
-                                );
-                            }
-                            else{
-                              
+                            bool confirm = confirmation(context, aadharFront, aadharBack, panFront, panBack);
+                            if (confirm == true){
+                              //post method
+                              bool status = true;
+                              if (status == true){
+                                Navigator.pushReplacement(
+                                context,
+                                PageTransition(
+                                    type: PageTransitionType.leftToRightWithFade,
+                                    child: StoreDetails()));
+                              }
                             }
                           },
                           color: primaryColor,
