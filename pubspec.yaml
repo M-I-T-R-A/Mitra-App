@@ -31,6 +31,8 @@ dependencies:
   quiver: ^2.1.5
   image_picker: ^0.6.7+21
   tesseract_ocr: ^0.3.1
+  flushbar: ^1.10.4
+  
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.1
