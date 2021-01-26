@@ -65,7 +65,21 @@ aadharCardVerification(String aadharNo){
   return false;
 }
 
+panCardVerification(String pan){
+  RegExp _numeric = RegExp(r'^-?[0-9]+$');
+
+  if(pan.length != 12)
+    showToast("PAN needs to be 12 digit!", grey, error);
+  else if(_numeric.hasMatch(pan) == false)
+    showToast("PAN needs to have only digit!", grey, error);
+  else{
+    return true;
+  }
+  return false;
+}
+
 aadharCardMatch(String path, String aadharNo) async{
+  print(aadharNo);
   var _extractText = await TesseractOcr.extractText(path);
   print(_extractText);
   String one = aadharNo.substring(0,4);
@@ -78,6 +92,19 @@ aadharCardMatch(String path, String aadharNo) async{
   }
   else{
     showToast("Please capture clear photo of Aadhar card!", grey, error);
+    return false;
+  }
+}
+
+panCardMatch(String path, String pan) async{
+  var _extractText = await TesseractOcr.extractText(path);
+  print(_extractText);
+  print(_extractText.contains(pan).toString());
+  if (_extractText.contains(pan)){
+    return true;
+  }
+  else{
+    showToast("Please capture clear photo of PAN card!", grey, error);
     return false;
   }
 }

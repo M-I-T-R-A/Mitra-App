@@ -1,31 +1,26 @@
 import 'dart:io';
-import 'package:Mitra/Screens/Home.dart';
 import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
-import 'package:Mitra/Services/KYC.dart';
+import 'package:Mitra/Screens/Verification/WeeksPurchase.dart';
+import 'package:Mitra/Services/BankStatement.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tesseract_ocr/tesseract_ocr.dart';
 
-class KYCScreen extends StatefulWidget {
+class BankStatementScreen extends StatefulWidget {
   @override
-  _KYCScreenState createState() => _KYCScreenState();
+  _BankStatementScreenState createState() => _BankStatementScreenState();
 }
 
-class _KYCScreenState extends State<KYCScreen> {
+class _BankStatementScreenState extends State<BankStatementScreen> {
   @override
   void initState() {
     super.initState();
   }
-  File aadharFront;
-  File aadharBack;
-  File panFront;
-  File panBack;
+  File passbookFront;
+  File passbookLatest;
   final picker = ImagePicker();
 
-  String aadharNo;
-  String panNo;
   @override
   Widget build(BuildContext context) {
     Future<String> getImage() async {
@@ -66,7 +61,7 @@ class _KYCScreenState extends State<KYCScreen> {
                     margin: EdgeInsets.only(top: 15),
                     child: ListTile(
                         title: Text(
-                          "1. Know Your Customer",
+                          "3. Upload Bank Statements",
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               fontSize: 16,
@@ -92,135 +87,15 @@ class _KYCScreenState extends State<KYCScreen> {
                         height: MediaQuery.of(context).size.height * 0.4,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: AssetImage("assets/images/kyc.png"),
+                              image: AssetImage("assets/images/statements.png"),
                               fit: BoxFit.cover,
                               alignment: Alignment.topCenter),
                         ),
                         child: null
                       ),
                     ),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)
-                      ),
-                      shadowColor: primaryColor,
-                      elevation: 2.0,
-                      child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(top: 15, left: 15, bottom: 5),
-                          child: Text(
-                            "Aadhar Number",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8, right: 8, bottom: 15),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(80),
-                                borderSide:
-                                    const BorderSide(color: Colors.transparent, width: 0.0),
-                              ),
-                              // disabledBorder: new InputBorder(borderSide: BorderSide.none),
-                              hintStyle: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                              filled: true,
-                              fillColor: darkGrey,
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 17, vertical: 12),
-                              hintText: "Enter 12-digit aadhar number",
-                            ),
-                            onChanged: (value) {
-                              if (value.length >= 12){
-                                bool status = aadharCardVerification(value);
-                                if (status == true)
-                                  this.aadharNo = value;
-                              }
-                            },
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            RaisedButton(shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(35.0)),
-                              onPressed: () async{
-                                path = await getImage();
-
-                                bool status = await aadharCardMatch(path, this.aadharNo);
-                                if (status == true){
-                                  setState(() {
-                                    aadharFront = File(path);
-                                  });
-                                }
-                              },
-                              color: primaryColor,
-                              child: RichText(
-                                text: TextSpan(children: <TextSpan>[
-                                  TextSpan(
-                                      text: "Aadhar Front",
-                                      style: TextStyle(
-                                          letterSpacing: 1,
-                                          color: white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold)),
-                                ]),
-                              ),
-                            ),
-                            Center(
-                              child: aadharFront == null
-                                  ? SizedBox()
-                                  : Image.file(aadharFront,
-                                      height: 45.0,
-                                      width: 45.0)
-                                    ), 
-                            RaisedButton(shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(35.0)),
-                              onPressed: () async{
-                                path = await getImage();
-                                // bool status = await aadharCardMatch(path, this.aadharNo);
-                                // print(status);
-                                bool status = true;
-                                if (status == true){
-                                  setState(() {
-                                    aadharBack  = File(path);
-                                  });
-                                }
-                              },
-                              color: primaryColor,
-                              child: RichText(
-                                text: TextSpan(children: <TextSpan>[
-                                  TextSpan(
-                                      text: "Aadhar Back",
-                                      style: TextStyle(
-                                          letterSpacing: 1,
-                                          color: white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold)),
-                                ]),
-                              ),
-                            ),
-                            Center(
-                              child: aadharBack == null
-                                  ? SizedBox()
-                                  : Image.file(aadharBack,
-                                      height: 45.0,
-                                      width: 45.0)
-                                    ),
-                          ],
-                        ),
-                        SizedBox(height: 15,)
-                      ],
-                    ),
                     
-                    ),
+                    SizedBox(height: 30,),
                     Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)
@@ -234,7 +109,7 @@ class _KYCScreenState extends State<KYCScreen> {
                         Padding(
                           padding: EdgeInsets.only(top: 15, left: 15, bottom: 5),
                           child: Text(
-                            "PAN Number",
+                            "Upload Passbook Front Page",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -242,80 +117,24 @@ class _KYCScreenState extends State<KYCScreen> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8, right: 8, bottom: 15),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(80),
-                                borderSide:
-                                    const BorderSide(color: Colors.transparent, width: 0.0),
-                              ),
-                              // disabledBorder: new InputBorder(borderSide: BorderSide.none),
-                              hintStyle: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                              filled: true,
-                              fillColor: darkGrey,
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 17, vertical: 12),
-                              hintText: "Enter 12-digit pan number",
-                            ),
-                            onChanged: (value) {
-                                  // if (value.length >= 12){
-                                  // bool status = panCardVerification(value);
-                                  // if (status == true)
-                                    this.panNo = value;
-                                // }
-                            },
-                          ),
-                        ),
+                        
+                        SizedBox(height: 15,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            RaisedButton(shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(35.0)),
-                              onPressed: () async{
-                                path = await getImage();
-                                // bool status = await panCardMatch(path, this.panNo);
-                                bool status = true;
-                                if (status == true){
-                                  setState(() {
-                                    panFront  = File(path);
-                                  });
-                                }
-                              },
-                              color: primaryColor,
-                              child: RichText(
-                                text: TextSpan(children: <TextSpan>[
-                                  TextSpan(
-                                      text: "PAN Front",
-                                      style: TextStyle(
-                                          letterSpacing: 1,
-                                          color: white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold)),
-                                ]),
-                              ),
-                            ),
-                            Center(
-                              child: panFront == null
-                                  ? SizedBox()
-                                  : Image.file(panFront,
-                                      height: 45.0,
-                                      width: 45.0)
-                                    ), 
                             RaisedButton(shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
                                 path = await getImage();
                                 setState(() {
-                                  panBack  = File(path);
-                                });
+                                    passbookFront = File(path);
+                                  });
                               },
                               color: primaryColor,
                               child: RichText(
                                 text: TextSpan(children: <TextSpan>[
                                   TextSpan(
-                                      text: "PAN Back",
+                                      text: "Front Page",
                                       style: TextStyle(
                                           letterSpacing: 1,
                                           color: white,
@@ -325,29 +144,92 @@ class _KYCScreenState extends State<KYCScreen> {
                               ),
                             ),
                             Center(
-                              child: panBack == null
-                                  ? SizedBox()
-                                  : Image.file(panBack,
-                                      height: 45.0,
-                                      width: 45.0)
-                                    ),
+                              child: passbookFront == null
+                                  ? SizedBox(height: 15,)
+                                  : Image.file(passbookFront,
+                                      height: 65.0,
+                                      width: 65.0)
+                                    ), 
                           ],
                         ),
-                        SizedBox(height: 15,)
+                        SizedBox(height: 30,)
                       ],
                     ),
                     
                     ),
+                    Card(
+                      
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)
+                      ),
+                      shadowColor: primaryColor,
+                      elevation: 2.0,
+                      child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 15, left: 15, bottom: 5),
+                          child: Text(
+                            "PassBook Latest Page",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 15,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            RaisedButton(shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(35.0)),
+                              onPressed: () async{
+                                path = await getImage();
+                                  setState(() {
+                                    passbookLatest  = File(path);
+                                  });
+                              },
+                              color: primaryColor,
+                              child: RichText(
+                                text: TextSpan(children: <TextSpan>[
+                                  TextSpan(
+                                      text: "Latest Page",
+                                      style: TextStyle(
+                                          letterSpacing: 1,
+                                          color: white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold)),
+                                ]),
+                              ),
+                            ),
+                            Center(
+                              child: passbookLatest == null
+                                  ? SizedBox(height: 15,)
+                                  : Image.file(passbookLatest,
+                                      height: 65.0,
+                                      width: 65.0)
+                                    ), 
+                          ],
+                        ),
+                        SizedBox(height: 30,)
+                      ],
+                    ),
+                    
+                    ),
+                    
+                    SizedBox(height: 30,),
                     Center(
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
-                        height: 45,
+                        height: 50,
                         child: RaisedButton(
                           // padding: EdgeInsets.only(bottom: 10),
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                           onPressed: () async {
-                            bool confirm = confirmation(context, aadharFront, aadharBack, panFront, panBack);
+                            bool confirm = confirmation(context, passbookFront, passbookLatest);
                             if (confirm == true){
                               //post method
                               bool status = true;
@@ -356,7 +238,7 @@ class _KYCScreenState extends State<KYCScreen> {
                                 context,
                                 PageTransition(
                                     type: PageTransitionType.leftToRightWithFade,
-                                    child: StoreDetails()));
+                                    child: WeeksPurchaseScreen()));
                               }
                             }
                           },
