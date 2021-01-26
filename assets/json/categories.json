@@ -1,0 +1,47 @@
+[
+  {
+    "name": "fruits-vegetables",
+    "dname": "Fruits & Vegetables",
+    "image": "assets/images/categories/f&v.png"
+  },
+  {
+    "name": "bakery-cakes-dairy",
+    "dname": "Bakery, Cakes & Dairy",
+    "image": "assets/images/categories/bd&c.png"
+  },
+  {
+    "name": "foodgrains-oil-masala",
+    "dname": "Foodgrains & oil",
+    "image": "assets/images/categories/fo&m.png"
+  },
+  {
+    "name": "snacks-branded-foods",
+    "dname": "Snacks & Branded foods",
+    "image": "assets/images/categories/s&b.png"
+  },
+  {
+    "name": "beverages",
+    "dname": "Beverages",
+    "image": "assets/images/categories/b.png"
+  },
+  {
+    "name": "beauty-hygiene",
+    "dname": "Beauty & Hygiene",
+    "image": "assets/images/categories/b&h.png"
+  },
+  {
+    "name": "cleaning-household",
+    "dname": "Cleaning & Household",
+    "image": "assets/images/categories/c&h.png"
+  },
+  {
+    "name": "baby-care",
+    "dname": "Baby care",
+    "image": "assets/images/categories/bc.png"
+  },
+  {
+    "name": "gourmet-world-food",
+    "dname": "Gourmet & World food",
+    "image": "assets/images/categories/g&wf.png"
+  }
+]
