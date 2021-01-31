@@ -1,3 +1,4 @@
+import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/Widget/SettingsDivider.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   
   @override
   void initState() {
@@ -21,7 +23,8 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
- 
+      key: _scaffoldKey,
+      drawer: NavigationDrawer(),      
       body: SingleChildScrollView(
         // physics: BouncingScrollPhysics(),
         child: Column(
@@ -40,7 +43,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               size: 24,
                               color: black,
                             ),
-                            onPressed: () => {},
+                            onPressed: () => _scaffoldKey.currentState.openDrawer(),
                           ),
                         ),
                         title: Text(

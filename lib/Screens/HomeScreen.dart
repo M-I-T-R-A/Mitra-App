@@ -1,3 +1,4 @@
+import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/Services/Groceries.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ class HomeScreen extends StatefulWidget {
 
 class _CategoriesState extends State<HomeScreen> {
   double w, h;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<dynamic> lst;
   void initState() {
     super.initState();
@@ -27,6 +29,8 @@ class _CategoriesState extends State<HomeScreen> {
     h = MediaQuery.of(context).size.height;
     return Scaffold(
         backgroundColor: Colors.white,
+        key: _scaffoldKey,
+        drawer: NavigationDrawer(),
         body: Column(
           children: [
             Stack(
@@ -42,7 +46,7 @@ class _CategoriesState extends State<HomeScreen> {
                               size: 24,
                               color: black,
                             ),
-                            onPressed: () => {},
+                            onPressed: () => _scaffoldKey.currentState.openDrawer(),
                           ),
                         ),
                         title: Text(

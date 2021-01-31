@@ -1,3 +1,4 @@
+import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,8 @@ class BusinessScreen extends StatefulWidget {
 }
 
 class _BusinessScreenState extends State<BusinessScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  
   @override
   void initState() {
     super.initState();
@@ -15,9 +18,12 @@ class _BusinessScreenState extends State<BusinessScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: NavigationDrawer(),      
       body: SingleChildScrollView(
         // physics: BouncingScrollPhysics(),
-        child: Stack(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Stack(
               children: <Widget>[
@@ -32,7 +38,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
                               size: 24,
                               color: black,
                             ),
-                            onPressed: () => {},
+                            onPressed: () => _scaffoldKey.currentState.openDrawer(),
                           ),
                         ),
                         title: Text(

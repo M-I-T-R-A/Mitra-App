@@ -1,3 +1,4 @@
+import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,8 @@ class ChatbotScreen extends StatefulWidget {
 }
 
 class _ChatbotScreenState extends State<ChatbotScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  
   @override
   void initState() {
     super.initState();
@@ -15,9 +18,12 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: NavigationDrawer(),      
       body: SingleChildScrollView(
         // physics: BouncingScrollPhysics(),
-        child: Stack(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Stack(
               children: <Widget>[
@@ -32,11 +38,11 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                               size: 24,
                               color: black,
                             ),
-                            onPressed: () => {},
+                            onPressed: () => _scaffoldKey.currentState.openDrawer(),
                           ),
                         ),
                         title: Text(
-                          "Chatbot",
+                          "Chat with Mitra!",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 18,

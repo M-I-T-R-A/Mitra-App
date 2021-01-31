@@ -1,3 +1,4 @@
+import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +11,8 @@ class KhataScreen extends StatefulWidget {
 class _KhataScreenState extends State<KhataScreen> {
   double w, h, slat, slng;
   SharedPreferences prefs;
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  
   void initState() {
     super.initState();
     init();
@@ -24,7 +26,9 @@ class _KhataScreenState extends State<KhataScreen> {
     w = MediaQuery.of(context).size.width;
     h = MediaQuery.of(context).size.height;
     return Scaffold(
-          backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        key: _scaffoldKey,
+        drawer: NavigationDrawer(),
         body: Column(
           children: [
             Stack(
@@ -40,7 +44,7 @@ class _KhataScreenState extends State<KhataScreen> {
                               size: 24,
                               color: black,
                             ),
-                            onPressed: () => {},
+                            onPressed: () => _scaffoldKey.currentState.openDrawer(),
                           ),
                         ),
                         title: Text(
