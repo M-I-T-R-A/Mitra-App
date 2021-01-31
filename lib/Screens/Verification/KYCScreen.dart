@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'package:Mitra/Screens/Home.dart';
 import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
+import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:Mitra/Services/KYC.dart';
+import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tesseract_ocr/tesseract_ocr.dart';
 
 class KYCScreen extends StatefulWidget {
@@ -22,6 +25,12 @@ class _KYCScreenState extends State<KYCScreen> {
   File aadharBack;
   File panFront;
   File panBack;
+
+  String aadharFrontURL;
+  String aadharBackURL;
+  String panFrontURL;
+  String panBackURL;
+
   final picker = ImagePicker();
 
   String aadharNo;
@@ -159,6 +168,10 @@ class _KYCScreenState extends State<KYCScreen> {
                                   setState(() {
                                     aadharFront = File(path);
                                   });
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  String id = prefs.getString("firebase_id");
+                                  aadharFrontURL = await uploadFile(aadharFront, "$id/Aadhar/");
+                                  showToast("Aadhar Card Front Image Uploaded", grey, primaryColor);
                                 }
                               },
                               color: primaryColor,
@@ -192,6 +205,10 @@ class _KYCScreenState extends State<KYCScreen> {
                                   setState(() {
                                     aadharBack  = File(path);
                                   });
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  String id = prefs.getString("firebase_id");
+                                  aadharBackURL = await uploadFile(aadharBack, "$id/Aadhar/");
+                                  showToast("Aadhar Card Back Image Uploaded", grey, primaryColor);
                                 }
                               },
                               color: primaryColor,
@@ -281,6 +298,10 @@ class _KYCScreenState extends State<KYCScreen> {
                                   setState(() {
                                     panFront  = File(path);
                                   });
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  String id = prefs.getString("firebase_id");
+                                  panFrontURL = await uploadFile(panFront, "$id/PAN/");
+                                  showToast("PAN Card Front Image Uploaded", grey, primaryColor);
                                 }
                               },
                               color: primaryColor,
@@ -310,6 +331,10 @@ class _KYCScreenState extends State<KYCScreen> {
                                 setState(() {
                                   panBack  = File(path);
                                 });
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  String id = prefs.getString("firebase_id");
+                                  panBackURL = await uploadFile(panFront, "$id/PAN/");
+                                  showToast("PAN Card Back Image Uploaded", grey, primaryColor);
                               },
                               color: primaryColor,
                               child: RichText(

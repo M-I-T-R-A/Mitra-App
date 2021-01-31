@@ -2,10 +2,13 @@ import 'dart:io';
 import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
 import 'package:Mitra/Screens/Verification/WeeksPurchase.dart';
 import 'package:Mitra/Services/BankStatement.dart';
+import 'package:Mitra/Services/Fluttertoast.dart';
+import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BankStatementScreen extends StatefulWidget {
   @override
@@ -19,6 +22,10 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
   }
   File passbookFront;
   File passbookLatest;
+
+  String passbookFrontURL;
+  String passbookLatestURL;
+  
   final picker = ImagePicker();
 
   @override
@@ -129,6 +136,10 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                                 setState(() {
                                     passbookFront = File(path);
                                   });
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  String id = prefs.getString("firebase_id");
+                                  passbookFrontURL = await uploadFile(passbookFront, "$id/PassBook/");
+                                  showToast("PassBook Front Image Uploaded", grey, primaryColor);
                               },
                               color: primaryColor,
                               child: RichText(
@@ -190,6 +201,10 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                                   setState(() {
                                     passbookLatest  = File(path);
                                   });
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  String id = prefs.getString("firebase_id");
+                                  passbookLatestURL = await uploadFile(passbookLatest, "$id/PassBook/");
+                                  showToast("PassBook Latest Image Uploaded", grey, primaryColor);
                               },
                               color: primaryColor,
                               child: RichText(

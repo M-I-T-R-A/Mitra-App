@@ -2,11 +2,14 @@ import 'dart:io';
 import 'package:Mitra/Screens/Home.dart';
 import 'package:Mitra/Screens/HomeScreen.dart';
 import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
+import 'package:Mitra/Services/Fluttertoast.dart';
+import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:Mitra/Services/WeeksPurchase.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WeeksPurchaseScreen extends StatefulWidget {
   @override
@@ -19,6 +22,7 @@ class _WeeksPurchaseScreenState extends State<WeeksPurchaseScreen> {
     super.initState();
   }
   File weekPurchase;
+  String weekPurchaseURL;
   final picker = ImagePicker();
 
   @override
@@ -129,6 +133,10 @@ class _WeeksPurchaseScreenState extends State<WeeksPurchaseScreen> {
                                   setState(() {
                                     weekPurchase = File(path);
                                   });
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  String id = prefs.getString("firebase_id");
+                                  weekPurchaseURL = await uploadFile(weekPurchase, "$id/PassBook/");
+                                  showToast("Week Purchase Image Uploaded", grey, primaryColor);
                               },
                               color: primaryColor,
                               child: RichText(

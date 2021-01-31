@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:Mitra/Screens/OnBoarding/OTPScreen.dart';
+import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
@@ -103,8 +104,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     hintText: "Enter your first name",
                                   ),
                                   onChanged: (value) async{
-                                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                                    await prefs.setString('firstName', value);
+                                    if (value.length == 0)
+                                      showToast("Please Enter your First Name", grey, error);
+                                    else{
+                                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      await prefs.setString('firstName', value);
+                                    }
                                   },
                                 ),
                               ),
@@ -151,8 +156,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     hintText: "Enter your last name",
                                   ),
                                   onChanged: (value) async{
-                                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                                    await prefs.setString('lastName', value);
+                                    if (value.length == 0)
+                                      showToast("Please Enter Your Last Name", grey, error);
+                                    else{
+                                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      await prefs.setString('lastName', value);
+                                    }
                                   },
                                 ),
                               ),
@@ -221,29 +230,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                           onPressed: () async {
-                            // final url = (server+"user/check_mobile/"+this.mobileNo);
-                            // Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
-                            // print(response.body);
-                            // bool status = jsonDecode(response.body)["status"];
-                            bool status = false;
-                            if (status == true){
-                              print("Old User Login");
-                                  Fluttertoast.showToast(
-                                    msg: "Seems you are already registered, please login",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM, 
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.grey[200],
-                                    textColor: primaryColor,
-                                    fontSize: 12.0
-                                );
+                            if (this.mobileNo.length != 10){
+                              showToast("Mobile Number is not valid", Colors.grey[200], error);  
                             }
-                            else
-                            Navigator.pushReplacement(
-                                context,
-                                PageTransition(
-                                    type: PageTransitionType.leftToRightWithFade,
-                                    child: OTPScreen(mobileNo: this.mobileNo, mode: "Register")));
+                            else{
+                              // final url = (server+"user/check_mobile/"+this.mobileNo);
+                              // Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
+                              // print(response.body);
+                              // bool status = jsonDecode(response.body)["status"];
+                              bool status = false;
+                              if (status == true){
+                                print("Old User Login");
+                                    Fluttertoast.showToast(
+                                      msg: "Seems you are already registered, please login",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM, 
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.grey[200],
+                                      textColor: primaryColor,
+                                      fontSize: 12.0
+                                  );
+                              }
+                              else
+                              Navigator.pushReplacement(
+                                  context,
+                                  PageTransition(
+                                      type: PageTransitionType.leftToRightWithFade,
+                                      child: OTPScreen(mobileNo: this.mobileNo, mode: "Register")));
+                            }
                           },
                           color: primaryColor,
                           child: RichText(

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "916862715477",
+    "project_id": "mitra-aad4b",
+    "storage_bucket": "mitra-aad4b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916862715477:android:5747d42e3835377e07b6dc",
+        "android_client_info": {
+          "package_name": "com.example.Mitra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916862715477-kt0o361ff6iieso52tcpqp11j8hvkg2j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.Mitra",
+            "certificate_hash": "a61875a764c8ebeefa8961c7778e36276bea7406"
+          }
+        },
+        {
+          "client_id": "916862715477-huvn2ovqfi1s12qjodrkeoaut7mcm0gk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVIb5ja6-DhgLvWY2r9Hr5lx-3xgCLcnw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "916862715477-huvn2ovqfi1s12qjodrkeoaut7mcm0gk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

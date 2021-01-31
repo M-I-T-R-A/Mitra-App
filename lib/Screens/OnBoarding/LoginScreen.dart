@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:Mitra/Screens/OnBoarding/OTPScreen.dart';
+import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
@@ -111,30 +112,27 @@ class _LoginScreenState extends State<LoginScreen> {
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                           onPressed: () async {
-                            // final url = (server+"user/check_mobile/"+this.mobileNo);
-                            // Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
-                            // print(response.body);
-                            // bool status = jsonDecode(response.body)["status"];
-                            bool status = true;
-                            if (status == false){
-                              print("New User Login");
-                                  Fluttertoast.showToast(
-                                    msg: "Seems you are new here, please register",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM, 
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.grey[200],
-                                    textColor: primaryColor,
-                                    fontSize: 12.0
-                                );
+                            if (this.mobileNo.length != 10){
+                              showToast("Mobile Number is not valid", Colors.grey[200], error);  
                             }
-                            else
-                            Navigator.pushReplacement(
-                                context,
-                                PageTransition(
-                                    type: PageTransitionType.rightToLeftWithFade,
-                                    child: OTPScreen(mobileNo: this.mobileNo, mode: "Login")));
-                          },
+                            else{
+                              // final url = (server+"user/check_mobile/"+this.mobileNo);
+                              // Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
+                              // print(response.body);
+                              // bool status = jsonDecode(response.body)["status"];
+                              bool status = true;
+                              if (status == false){
+                                print("New User Login");
+                                showToast("Seems you are new here, please register", Colors.grey[200], primaryColor);
+                              }
+                              else
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageTransition(
+                                      type: PageTransitionType.rightToLeftWithFade,
+                                      child: OTPScreen(mobileNo: this.mobileNo, mode: "Login")));
+                              }
+                            },
                           color: primaryColor,
                           child: RichText(
                             text: TextSpan(children: <TextSpan>[
