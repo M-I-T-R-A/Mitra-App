@@ -73,7 +73,7 @@ class NavigationDrawer extends StatelessWidget {
                     child: Home(index: 2))),
          ),
          ListTile(
-           title: Text('App version .0.0.1'),
+           title: Text('App version 0.0.1'),
            onTap: () {},
          ),
          ListTile(
