@@ -1,0 +1,32 @@
+[
+  {
+    "name": "emi-calculator",
+    "displayName": "EMI Calculator",
+    "icon": 59518
+  },
+  {
+    "name": "explore-loans",
+    "displayName": "Explore Loans",
+    "icon": 59811
+  },
+  {
+    "name": "offers",
+    "displayName": "Offers",
+    "icon": 58007
+  },
+  {
+    "name": "enquiry",
+    "displayName": "Enquiry",
+    "icon": 58274
+  },
+  {
+    "name": "current-loan",
+    "displayName": "Current Loan",
+    "icon": 57624
+  },
+  {
+    "name": "contact-us",
+    "displayName": "Contact Us",
+    "icon": 58917
+  }
+]
