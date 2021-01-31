@@ -1,6 +1,7 @@
 import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class KhataScreen extends StatefulWidget {
@@ -29,6 +30,20 @@ class _KhataScreenState extends State<KhataScreen> {
         backgroundColor: Colors.white,
         key: _scaffoldKey,
         drawer: NavigationDrawer(),
+        floatingActionButton: new FloatingActionButton(
+          backgroundColor: primaryColor,
+          foregroundColor: Colors.white,
+          elevation: 2.0,
+          onPressed:(){  
+            // Navigator.push(
+            //   context,
+            //   PageTransition(
+            //       type: PageTransitionType.bottomToTop,
+            //       child: ));
+          },
+          tooltip: 'Add Khata',
+          child: new Icon(Icons.add),
+        ),
         body: Column(
           children: [
             Stack(
