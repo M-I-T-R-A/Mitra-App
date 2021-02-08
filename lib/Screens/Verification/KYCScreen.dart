@@ -24,13 +24,12 @@ class _KYCScreenState extends State<KYCScreen> {
   File aadharFront;
   File aadharBack;
   File panFront;
-  File panBack;
 
   String aadharFrontURL;
   String aadharBackURL;
   String panFrontURL;
-  String panBackURL;
-
+  
+  var validAadharNo = false;
   final picker = ImagePicker();
 
   String aadharNo;
@@ -149,8 +148,12 @@ class _KYCScreenState extends State<KYCScreen> {
                             onChanged: (value) {
                               if (value.length >= 12){
                                 bool status = aadharCardVerification(value);
-                                if (status == true)
+                                if (status == true){
                                   this.aadharNo = value;
+                                  setState(() {
+                                      validAadharNo = true;
+                                  });
+                                }
                               }
                             },
                           ),
@@ -161,17 +164,21 @@ class _KYCScreenState extends State<KYCScreen> {
                             RaisedButton(shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
-                                path = await getImage();
+                                if (validAadharNo == false)
+                                  showToast("Type Aadhar No first", grey, error);
+                                else{
+                                  path = await getImage();
 
-                                bool status = await aadharCardMatch(path, this.aadharNo);
-                                if (status == true){
-                                  setState(() {
-                                    aadharFront = File(path);
-                                  });
-                                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                                  String id = prefs.getString("firebase_id");
-                                  aadharFrontURL = await uploadFile(aadharFront, "$id/Aadhar/");
-                                  showToast("Aadhar Card Front Image Uploaded", grey, primaryColor);
+                                  bool status = await aadharCardMatch(path, this.aadharNo);
+                                  if (status == true){
+                                    setState(() {
+                                      aadharFront = File(path);
+                                    });
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    String id = prefs.getString("firebase_id");
+                                    aadharFrontURL = await uploadFile(aadharFront, "$id/Aadhar/");
+                                    showToast("Aadhar Card Front Image Uploaded", grey, primaryColor);
+                                  }
                                 }
                               },
                               color: primaryColor,
@@ -197,18 +204,23 @@ class _KYCScreenState extends State<KYCScreen> {
                             RaisedButton(shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
-                                path = await getImage();
-                                // bool status = await aadharCardMatch(path, this.aadharNo);
-                                // print(status);
-                                bool status = true;
-                                if (status == true){
-                                  setState(() {
-                                    aadharBack  = File(path);
-                                  });
-                                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                                  String id = prefs.getString("firebase_id");
-                                  aadharBackURL = await uploadFile(aadharBack, "$id/Aadhar/");
-                                  showToast("Aadhar Card Back Image Uploaded", grey, primaryColor);
+                                if (aadharNo == null)
+                                  showToast("Type Aadhar No first", grey, error);
+                                else{
+                                  path = await getImage();
+                                  // bool status = await aadharCardMatch(path, this.aadharNo);
+                                  // print(status);
+                                  bool status = true;
+                                  if (status == true){
+                                    setState(() {
+                                      aadharBack  = File(path);
+                                    });
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    String id = prefs.getString("firebase_id");
+                                    aadharBackURL = await uploadFile(aadharBack, "$id/Aadhar/");
+                                    print(aadharBackURL);
+                                    showToast("Aadhar Card Back Image Uploaded", grey, primaryColor);
+                                  }
                                 }
                               },
                               color: primaryColor,
@@ -323,38 +335,6 @@ class _KYCScreenState extends State<KYCScreen> {
                                   : Image.file(panFront,
                                       height: 45.0,
                                       width: 45.0)
-                                    ), 
-                            RaisedButton(shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(35.0)),
-                              onPressed: () async{
-                                path = await getImage();
-                                setState(() {
-                                  panBack  = File(path);
-                                });
-                                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                                  String id = prefs.getString("firebase_id");
-                                  panBackURL = await uploadFile(panFront, "$id/PAN/");
-                                  showToast("PAN Card Back Image Uploaded", grey, primaryColor);
-                              },
-                              color: primaryColor,
-                              child: RichText(
-                                text: TextSpan(children: <TextSpan>[
-                                  TextSpan(
-                                      text: "PAN Back",
-                                      style: TextStyle(
-                                          letterSpacing: 1,
-                                          color: white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold)),
-                                ]),
-                              ),
-                            ),
-                            Center(
-                              child: panBack == null
-                                  ? SizedBox()
-                                  : Image.file(panBack,
-                                      height: 45.0,
-                                      width: 45.0)
                                     ),
                           ],
                         ),
@@ -372,11 +352,10 @@ class _KYCScreenState extends State<KYCScreen> {
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                           onPressed: () async {
-                            bool confirm = confirmation(context, aadharFront, aadharBack, panFront, panBack);
+                            bool confirm = confirmation(context, aadharFront, aadharBack, panFront);
                             if (confirm == true){
-                              //post method
-                              bool status = true;
-                              if (status == true){
+                              int status = await kycRegistration(aadharNo, panNo, aadharFrontURL, aadharBackURL, panFrontURL);
+                              if (status == 2){
                                 Navigator.pushReplacement(
                                 context,
                                 PageTransition(

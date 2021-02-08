@@ -1,22 +1,24 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:Mitra/Services/FlushBar.dart';
 import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tesseract_ocr/tesseract_ocr.dart';
 
-confirmation(BuildContext context, File aadharFront, File aadharBack, File panFront, File panBack){
+confirmation(BuildContext context, File aadharFront, File aadharBack, File panFront){
   String title = "Documents status";
   String message = "Following documents are uploaded...\n";
   
   message = message + "1. Aadhar card front image      " + (aadharFront == null ? "❌": "✔️") + "\n";
   message = message + "2. Aadhar card back image      " + (aadharBack == null ? "❌": "✔️") + "\n";
   message = message + "3. PAN card front image           " + (panFront == null ? "❌": "✔️") + "\n";
-  message = message + "4. PAN card back image           " + (panBack == null ? "❌": "✔️") + "\n";
-
+  
   showFlushBar(context, title, message);
-  return aadharFront == null || aadharBack == null || panFront == null || panBack == null ? false : true;
+  return aadharFront == null || aadharBack == null || panFront == null ? false : true;
 }
 
 aadharCardVerification(String aadharNo){
@@ -64,6 +66,31 @@ aadharCardVerification(String aadharNo){
   }
   return false;
 }
+
+kycRegistration(String aadhar, String pan, String aadharFrontURL, String aadharBackURL, String panFrontURL) async{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int id = prefs.getInt("id");
+  final user = {
+      "aadharCardFrontImageUrl": aadharFrontURL,
+      "aadharCardBackImageUrl": aadharFrontURL,
+      "aadhar": aadhar,
+      "pan": pan,
+      "panCardImageUrl": panFrontURL,
+      "status": 2
+    };
+
+    final url = (server+"customer/update/"+id.toString());
+    print(user);
+    
+    Response response = await put(Uri.encodeFull(url), body: json.encode(user), headers: {"Content-Type": "application/json"});
+    print(response.body);
+    int status = jsonDecode(response.body)["status"];
+    if (status == 2){
+      await prefs.setInt('login', 2);
+    }
+  return status;
+}
+
 
 panCardVerification(String pan){
   RegExp _numeric = RegExp(r'^-?[0-9]+$');

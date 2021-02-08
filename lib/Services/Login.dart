@@ -129,22 +129,25 @@ class LoginFunctions{
     var lastName = prefs.getString("lastName");
 
     final user = {
-      "username": firstName + " " + lastName,
-      "phone_no": currentUser.phoneNumber.substring(3),
-      'firebase_id': currentUser.uid,
-      'device_token': tokenId
+      "name": firstName + " " + lastName,
+      "phoneNumber": currentUser.phoneNumber.substring(3),
+      "status": 1,
+      // 'firebase_id': currentUser.uid,
+      // 'device_token': tokenId
     };
 
     await prefs.setString("firebase_id", currentUser.uid);
-    // final url = (server+"tenant");
-    // print(user);
+    final url = (server+"customer/add");
+    print(user);
     
-    // Response response = await post(Uri.encodeFull(url), body: json.encode(user), headers: {"Content-Type": "application/json"});
-    // print(response.body);
-    // bool status = jsonDecode(response.body)["status"];
-    bool status = true;
-    if (status == true){
-      await prefs.setBool('login', true);
+    Response response = await post(Uri.encodeFull(url), body: json.encode(user), headers: {"Content-Type": "application/json"});
+    print(response.body);
+    int status = jsonDecode(response.body)["status"];
+    int id = jsonDecode(response.body)["id"];
+    print(id);
+    if (status == 1){
+      await prefs.setInt('login', 1);
+      await prefs.setInt('id', id);
       await prefs.setString('mobile', currentUser.phoneNumber.substring(3));
       Navigator.pushReplacement(
         context,

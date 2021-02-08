@@ -23,4 +23,4 @@ const grey = Colors.grey;
 const black = Colors.black;
 const error = Colors.red;
 const darkGrey = Color(0xffE7EBED);
-final server = "";
+final server = "https://tvs-credit.herokuapp.com/";
