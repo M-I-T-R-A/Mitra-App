@@ -1,7 +1,14 @@
+import 'dart:convert';
+
+import 'package:Mitra/Models/Customer.dart';
 import 'package:Mitra/Screens/Drawer.dart';
+import 'package:Mitra/Services/Customer.dart';
 import 'package:Mitra/Widget/SettingsDivider.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -10,7 +17,8 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  
+  Customer customer;
+
   @override
   void initState() {
     super.initState();
@@ -18,6 +26,10 @@ class _SettingScreenState extends State<SettingScreen> {
   }
   
   void initialise() async {
+    Customer temp = await getCustomerProfile();
+    setState(() {
+      customer = temp;
+    });
   }
 
   @override
@@ -25,7 +37,7 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: NavigationDrawer(),      
-      body: SingleChildScrollView(
+      body: customer != null ? SingleChildScrollView(
         // physics: BouncingScrollPhysics(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -85,7 +97,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     Expanded(
                       flex: 1,
                       child: Container(
-                        child: Text("AJ",
+                        child: Text(this.customer.name ?? "Not Given",
                             style: TextStyle(color: Colors.black, fontSize: 15)),
                       ),
                     )
@@ -105,7 +117,28 @@ class _SettingScreenState extends State<SettingScreen> {
                     Expanded(
                       flex: 1,
                       child: Container(
-                        child: Text("+91 " + "98XXXXXXXX",
+                        child: Text("+91 " + this.customer.phoneNumber.toString()  ?? "Not Given",
+                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                      ),
+                    )
+                  ],
+                )
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text("Residence Address",
+                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text(this.customer.residenceAddress.toString()  ?? "Not Given",
                             style: TextStyle(color: Colors.black, fontSize: 15)),
                       ),
                     )
@@ -125,7 +158,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: 0 != 0 ?
+                      child: this.customer.verified != null ?
                         Icon(Icons.verified_user, color: primaryColor) :
                         Container()
                     )
@@ -183,7 +216,12 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
           ],
         ),
-      )
+      ): Container(
+            child: SpinKitDoubleBounce(
+              color: primaryColor,
+              size: 50.0,
+            )
+          ),
     );
   }
 }
