@@ -1,7 +1,10 @@
 import 'package:Mitra/Screens/Drawer.dart';
+import 'package:Mitra/Screens/Products.dart';
 import 'package:Mitra/Services/Groceries.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,19 +14,46 @@ class HomeScreen extends StatefulWidget {
 class _CategoriesState extends State<HomeScreen> {
   double w, h;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  List<dynamic> lst;
+  List<dynamic> allCategoryList;
   void initState() {
     super.initState();
     initstate();
   }
 
   initstate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('login', 7);
     List<dynamic> tmp = await getCategory();
     setState(() {
-      lst = tmp;
+      allCategoryList = tmp;
     });
   }
-
+  
+  List<dynamic> existingList;
+  
+  _showEditCategoryDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Edit Category"),
+            content: MultiSelectChip(
+              allCategoryList,
+              onSelectionChanged: (selectedList) {
+                setState(() {
+                  existingList = (selectedList);
+                });
+              },
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Add"),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        });
+  }
   Widget build(BuildContext context) {
     w = MediaQuery.of(context).size.width;
     h = MediaQuery.of(context).size.height;
@@ -31,6 +61,14 @@ class _CategoriesState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         key: _scaffoldKey,
         drawer: NavigationDrawer(),
+        floatingActionButton: new FloatingActionButton(
+          backgroundColor: primaryColor,
+          foregroundColor: Colors.white,
+          elevation: 2.0,
+          onPressed: () => _showEditCategoryDialog(),
+          tooltip: 'Filter Categories',
+          child: new Icon(Icons.filter_alt),
+        ),
         body: Column(
           children: [
             Stack(
@@ -122,40 +160,10 @@ class _CategoriesState extends State<HomeScreen> {
                     ),
                   ),
             ),
-            Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: 45,
-                child: RaisedButton(
-                  // padding: EdgeInsets.only(bottom: 10),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(35.0)),
-                  onPressed: () async {
-                        // Navigator.pushReplacement(
-                        // context,
-                        // PageTransition(
-                        //     type: PageTransitionType.leftToRightWithFade,
-                        //     child: EditCategories()));
-                  },
-                  color: primaryColor,
-                  child: RichText(
-                    text: TextSpan(children: <TextSpan>[
-                      TextSpan(
-                          text: "Edit Categories",
-                          style: TextStyle(
-                              letterSpacing: 1,
-                              color: white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold)),
-                    ]),
-                  ),
-                ),
-              ),
-            ),
             SizedBox(height: 15,),
-            lst != null ? Expanded(
+            existingList != null ? Expanded(
               child: GridView.builder(
-                itemCount: lst.length,
+                itemCount: existingList.length,
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 physics: AlwaysScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -176,7 +184,7 @@ class _CategoriesState extends State<HomeScreen> {
                     ),
                     child: InkWell(
                       onTap: () {
-                      //  Navigator.push(context, MaterialPageRoute(builder: (context) => Products(category: lst[index].name, name: lst[index].dname, image: lst[index].image)));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Products(category: existingList[index].name, name: existingList[index].dname, image: existingList[index].image)));
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -184,13 +192,13 @@ class _CategoriesState extends State<HomeScreen> {
                         ),
                         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         child: Container(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(8),
                           child: Column(
                             children: [
-                              Image.asset(lst[index].image),
+                              Image.asset(existingList[index].image),
                               Center(
-                                child: Text(lst[index].dname,
-                                  style: TextStyle(fontSize: 12)
+                                child: Text(existingList[index].dname,
+                                  style: TextStyle(fontSize: 10)
                                 ),
                               ),
                             ],
@@ -201,8 +209,65 @@ class _CategoriesState extends State<HomeScreen> {
                   );
                 }
               ),
-            ) : Container(), 
+            ) : Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.5,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/filter.png"),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter),
+                ),
+                child: null
+              
+            ),
           ],
         ));
+  }
+}
+
+class MultiSelectChip extends StatefulWidget {
+  final List<dynamic> categoryList;
+  final Function(List<dynamic>) onSelectionChanged;
+
+  MultiSelectChip(this.categoryList, {this.onSelectionChanged});
+
+  @override
+  _MultiSelectChipState createState() => _MultiSelectChipState();
+}
+
+class _MultiSelectChipState extends State<MultiSelectChip> {
+  // dynamic selectedChoice = "";
+  List<dynamic> selectedChoices = List();
+
+  _buildChoiceList() {
+    List<Widget> choices = List();
+    
+    widget.categoryList.forEach((item) {
+      choices.add(Container(
+        padding: const EdgeInsets.all(2.0),
+        child: ChoiceChip(
+          label: Text(item.dname),
+          selected: selectedChoices.contains(item),
+          onSelected: (selected) {
+            setState(() {
+              selectedChoices.contains(item)
+                  ? selectedChoices.remove(item)
+                  : selectedChoices.add(item);
+              widget.onSelectionChanged(selectedChoices);
+            });
+          },
+        ),
+      ));
+    });
+
+    return choices;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      children: _buildChoiceList(),
+    );
   }
 }
