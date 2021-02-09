@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:Mitra/Screens/LocationPicker.dart';
 import 'package:Mitra/Screens/Verification/BankStatementsScreen.dart';
+import 'package:Mitra/Screens/Verification/GurrantorDetails.dart';
+import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
 import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:Mitra/Services/StoreDetails.dart';
 import 'package:Mitra/Services/UploadImageFirestore.dart';
@@ -11,14 +13,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class StoreDetails extends StatefulWidget {
+class StoreOwnerDetails extends StatefulWidget {
   @override
-  _StoreDetailsState createState() => _StoreDetailsState();
+  _StoreOwnerDetailsState createState() => _StoreOwnerDetailsState();
 }
 
-class _StoreDetailsState extends State<StoreDetails> {
+class _StoreOwnerDetailsState extends State<StoreOwnerDetails> {
+  double annualIncome;
   var location = [];
-  var type = "Grocery";
+  var gender = "Male";
   String firstLine;
   String secondLine;
   double latitude;
@@ -28,16 +31,11 @@ class _StoreDetailsState extends State<StoreDetails> {
   String state;
   var value;
   SharedPreferences prefs;
-  String gstin;
-  int contactNumber;
-  String storeName;
-  String rent = "Purchased";
-  double areaPerSqft;
-
+  
   @override
   void initState() {
     super.initState();
-    location.insert(0, "Store Address");
+    location.insert(0, "Residence Address");
     init();
   }
 
@@ -46,8 +44,10 @@ class _StoreDetailsState extends State<StoreDetails> {
     await prefs.setInt('cnt', 0);
   }
 
-  setLocation(BuildContext context) async {
-    setState(() {
+  setStart(var value) async {
+    if(value.length > 0) {
+      setState(() {
+        location = value;
         firstLine = location[0];
         secondLine = location[1];
         latitude = location[2];
@@ -55,13 +55,6 @@ class _StoreDetailsState extends State<StoreDetails> {
         city = location[4];
         state = location[5];
         pincode = location[6];
-    });
-  }
-  
-  setStart(var value) async {
-    if(value.length > 0) {
-      setState(() {
-        location = value;
       });
     }
   }
@@ -110,7 +103,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                     margin: EdgeInsets.only(top: 15),
                     child: ListTile(
                       title: Text(
-                        "4. Store Details",
+                        "2. Store Owner Details",
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             fontSize: 16,
@@ -152,121 +145,28 @@ class _StoreDetailsState extends State<StoreDetails> {
                       horizontal: 15,
                     ),
                     child: TextField(
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: "GSTIN",
+                            hintText: "Annual Income",
                             hintStyle:
                                 TextStyle(color: grey, fontSize: 16)),
                             style: TextStyle(
                               fontSize: 16,
                             ),
                             onChanged: (value) {
-                                  this.gstin = value;
+                                  this.annualIncome = double.parse(value);
                             },
                         
                         ),
                   ),
                 ),
               ),
-            Container(
-                width: 0.8 * screenWidth,
-                margin: EdgeInsets.symmetric(vertical: 0.01 * screenHeight),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(color: primaryColor, blurRadius: 15.0, spreadRadius: -8),
-                  ],
-                ),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15,
-                    ),
-                    child: TextField(
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Contact Number",
-                            hintStyle:
-                                TextStyle(color: grey, fontSize: 16)),
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                            onChanged: (value) {
-                                  this.contactNumber = int.parse(value);
-                            },
-                        ),
-                  ),
-                ),
-              ),
-            Container(
-                width: 0.8 * screenWidth,
-                margin: EdgeInsets.symmetric(vertical: 0.01 * screenHeight),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(color: primaryColor, blurRadius: 15.0, spreadRadius: -8),
-                  ],
-                ),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15,
-                    ),
-                    child: TextField(
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Store Name",
-                            hintStyle:
-                                TextStyle(color: grey, fontSize: 16)),
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                            onChanged: (value) {
-                                  this.storeName = value;
-                            },
-                        
-                        ),
-                  ),
-                ),
-              ),
-              Container(
-                width: 0.8 * screenWidth,
-                margin: EdgeInsets.symmetric(vertical: 0.01 * screenHeight),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(color: primaryColor, blurRadius: 15.0, spreadRadius: -8),
-                  ],
-                ),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15,
-                    ),
-                    child: TextField(
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Area Per Sqft",
-                            hintStyle:
-                                TextStyle(color: grey, fontSize: 16)),
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                            onChanged: (value) {
-                                  this.areaPerSqft = double.parse(value);
-                            },
-                        ),
-                  ),
-                ),
-              ),
-            
               Card(
-                margin: EdgeInsets.symmetric(vertical: 0.01 * screenHeight),
+                shadowColor: primaryColor,
+                shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)
+                ),
                 child: GestureDetector(
                   onTap: () => {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => LocationPicker(header: "Enter Location"))).then((value) => setStart(value))
@@ -301,7 +201,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                       horizontal: 15,
                     ),
                     child: DropdownButton<String>(
-                            value: this.type,
+                            value: this.gender,
                             icon: Icon(Icons.arrow_downward),
                             iconSize: 24,
                             elevation: 16,
@@ -310,50 +210,10 @@ class _StoreDetailsState extends State<StoreDetails> {
                             ),
                             onChanged: (String newValue) {
                               setState(() {
-                                this.type = newValue.toUpperCase();
+                                this.gender = newValue.toUpperCase();
                               });
                             },
-                            items: <String>['Grocery', 'Clothing', 'Medical', 'VegetableAndFruit']
-                              .map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              })
-                              .toList(),
-                          ),
-                  ),
-                ),
-              ),
-              Container(
-                width: 0.8 * screenWidth,
-                margin: EdgeInsets.symmetric(vertical: 0.01 * screenHeight),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(color: primaryColor, blurRadius: 15.0, spreadRadius: -8),
-                  ],
-                ),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15,
-                    ),
-                    child: DropdownButton<String>(
-                            value: this.rent,
-                            icon: Icon(Icons.arrow_downward),
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(
-                              color: Colors.black
-                            ),
-                            onChanged: (String newValue) {
-                              setState(() {
-                                this.rent = newValue.toUpperCase();
-                              });
-                            },
-                            items: <String>['Purchased', 'Rented']
+                            items: <String>['Male', 'Female', 'Other']
                               .map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
@@ -416,7 +276,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
                                 var path = await getImage();
-                                // bool status = await panCardMatch(path, this.electrictiyBillAmount);
+                                // bool status = await electricityBillMatch(path, this.electrictiyBillAmount);
                                 bool status = true;
                                 if (status == true){
                                   setState(() {
@@ -424,7 +284,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                                   });
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                   String id = prefs.getString("firebase_id");
-                                  electricityBillURL = await uploadFile(electricityBill, "$id/ElectricityBill/Store");
+                                  electricityBillURL = await uploadFile(electricityBill, "$id/ElectricityBill/Home");
                                   showToast("Electricity Bill Image Uploaded", grey, primaryColor);
                                 }
                               },
@@ -460,13 +320,13 @@ class _StoreDetailsState extends State<StoreDetails> {
                 onPressed: () async{
                   bool confirm = confirmation(context, electricityBill);
                     if (confirm == true){
-                      int status = await storeRegistration(type, gstin, areaPerSqft, rent, contactNumber, storeName,  firstLine, secondLine, latitude, longitude, pincode, city, state, electricityBillAmount, electricityBillURL);
-                      if (status == 5){
+                      int status = await storeOwnerRegistration(gender, annualIncome, firstLine, secondLine, latitude, longitude, pincode, city, state, electricityBillAmount, electricityBillURL);
+                      if (status == 3){
                           Navigator.pushReplacement(
                           context,
                           PageTransition(
                               type: PageTransitionType.leftToRightWithFade,
-                              child: BankStatementScreen()));
+                              child: GurrantorDetails()));
                     }
                   }
               },

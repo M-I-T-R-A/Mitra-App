@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
 import 'package:Mitra/Screens/Verification/WeeksPurchase.dart';
 import 'package:Mitra/Services/BankStatement.dart';
 import 'package:Mitra/Services/Fluttertoast.dart';
@@ -7,8 +6,8 @@ import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:file_picker/file_picker.dart';
 
 class BankStatementScreen extends StatefulWidget {
   @override
@@ -20,19 +19,24 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
   void initState() {
     super.initState();
   }
-  File passbookFront;
-  File passbookLatest;
+  File bankStatement;
+  File incomeTax;
 
-  String passbookFrontURL;
-  String passbookLatestURL;
+  String bankStatementURL;
+  String incomeTaxURL;
   
-  final picker = ImagePicker();
-
   @override
   Widget build(BuildContext context) {
-    Future<String> getImage() async {
-      final pickedFile = await picker.getImage(source: ImageSource.camera);
-      return pickedFile.path;
+    Future<String> getPdf() async {
+      FilePickerResult result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+
+      File file;
+      if(result != null) {
+        file = File(result.files.single.path);
+      } else {
+        print("No file selected");
+      }
+      return file.path;
     }
 
     Size size = MediaQuery.of(context).size;
@@ -68,7 +72,7 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                     margin: EdgeInsets.only(top: 15),
                     child: ListTile(
                         title: Text(
-                          "3. Upload Bank Statements",
+                          "5. Upload Bank Statements and Income Tax Statement",
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               fontSize: 16,
@@ -116,7 +120,7 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                         Padding(
                           padding: EdgeInsets.only(top: 15, left: 15, bottom: 5),
                           child: Text(
-                            "Upload Passbook Front Page",
+                            "Upload Bank Statement",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -132,20 +136,20 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                             RaisedButton(shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
-                                path = await getImage();
+                                path = await getPdf();
                                 setState(() {
-                                    passbookFront = File(path);
+                                    bankStatement = File(path);
                                   });
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                   String id = prefs.getString("firebase_id");
-                                  passbookFrontURL = await uploadFile(passbookFront, "$id/PassBook/");
-                                  showToast("PassBook Front Image Uploaded", grey, primaryColor);
+                                  bankStatementURL = await uploadFile(bankStatement, "$id/BankStatement/");
+                                  showToast("Bank Statement Uploaded", grey, primaryColor);
                               },
                               color: primaryColor,
                               child: RichText(
                                 text: TextSpan(children: <TextSpan>[
                                   TextSpan(
-                                      text: "Front Page",
+                                      text: "BankStatement",
                                       style: TextStyle(
                                           letterSpacing: 1,
                                           color: white,
@@ -154,13 +158,24 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                                 ]),
                               ),
                             ),
-                            Center(
-                              child: passbookFront == null
+                            Expanded(
+                              child: bankStatement == null
                                   ? SizedBox(height: 15,)
-                                  : Image.file(passbookFront,
-                                      height: 65.0,
-                                      width: 65.0)
-                                    ), 
+                                  : Flexible(
+                                      child: new Container(
+                                        padding: new EdgeInsets.only(right: 13.0),
+                                        child: new Text(
+                                          bankStatement.toString().split('/').last,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: new TextStyle(
+                                            fontSize: 13.0,
+                                            fontFamily: 'Roboto',
+                                            color: new Color(0xFF212121),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ))
                           ],
                         ),
                         SizedBox(height: 30,)
@@ -182,7 +197,7 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                         Padding(
                           padding: EdgeInsets.only(top: 15, left: 15, bottom: 5),
                           child: Text(
-                            "PassBook Latest Page",
+                            "Upload incomeTax Statements",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -197,20 +212,20 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                             RaisedButton(shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
-                                path = await getImage();
+                                path = await getPdf();
                                   setState(() {
-                                    passbookLatest  = File(path);
+                                    incomeTax  = File(path);
                                   });
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                   String id = prefs.getString("firebase_id");
-                                  passbookLatestURL = await uploadFile(passbookLatest, "$id/PassBook/");
-                                  showToast("PassBook Latest Image Uploaded", grey, primaryColor);
+                                  incomeTaxURL = await uploadFile(incomeTax, "$id/incomeTaxStatements/");
+                                  showToast("Income Tax Statements Uploaded", grey, primaryColor);
                               },
                               color: primaryColor,
                               child: RichText(
                                 text: TextSpan(children: <TextSpan>[
                                   TextSpan(
-                                      text: "Latest Page",
+                                      text: "incomeTax Statements",
                                       style: TextStyle(
                                           letterSpacing: 1,
                                           color: white,
@@ -219,13 +234,24 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                                 ]),
                               ),
                             ),
-                            Center(
-                              child: passbookLatest == null
+                            Expanded(
+                              child: incomeTax == null
                                   ? SizedBox(height: 15,)
-                                  : Image.file(passbookLatest,
-                                      height: 65.0,
-                                      width: 65.0)
-                                    ), 
+                                  : Flexible(
+                                      child: new Container(
+                                        padding: new EdgeInsets.only(right: 13.0),
+                                        child: new Text(
+                                          incomeTax.toString().split('/').last,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: new TextStyle(
+                                            fontSize: 13.0,
+                                            fontFamily: 'Roboto',
+                                            color: new Color(0xFF212121),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    )) 
                           ],
                         ),
                         SizedBox(height: 30,)
@@ -244,11 +270,11 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                           onPressed: () async {
-                            bool confirm = confirmation(context, passbookFront, passbookLatest);
+                            bool confirm = confirmation(context, bankStatement, incomeTax);
                             if (confirm == true){
                               //post method
-                              bool status = true;
-                              if (status == true){
+                              int status = 6;
+                              if (status == 6){
                                 Navigator.pushReplacement(
                                 context,
                                 PageTransition(
@@ -275,7 +301,6 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                   ],
                 ),
               ),
-              
           ]
          )
         )

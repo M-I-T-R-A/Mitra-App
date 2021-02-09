@@ -65,7 +65,7 @@ class _WeeksPurchaseScreenState extends State<WeeksPurchaseScreen> {
                     margin: EdgeInsets.only(top: 15),
                     child: ListTile(
                         title: Text(
-                          "4. Week's Purchase",
+                          "6. Week's Purchase",
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               fontSize: 16,
@@ -179,8 +179,8 @@ class _WeeksPurchaseScreenState extends State<WeeksPurchaseScreen> {
                             bool confirm = confirmation(context, weekPurchase);
                             if (confirm == true){
                               //post method
-                              bool status = true;
-                              if (status == true){
+                              int status = 7;
+                              if (status == 7){
                                 Navigator.pushReplacement(
                                 context,
                                 PageTransition(

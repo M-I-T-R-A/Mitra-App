@@ -1,7 +1,9 @@
 import 'package:Mitra/Screens/LandingScreen.dart';
 import 'package:Mitra/Screens/Verification/BankStatementsScreen.dart';
+import 'package:Mitra/Screens/Verification/GurrantorDetails.dart';
 import 'package:Mitra/Screens/Verification/KYCScreen.dart';
 import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
+import 'package:Mitra/Screens/Verification/StoreOwnerDetails.dart';
 import 'package:Mitra/Screens/Verification/WeeksPurchase.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
@@ -154,10 +156,12 @@ class _MitraState extends State<Mitra> {
     switch(login){
       case 0: return LandingScreen();
       case 1: return KYCScreen();
-      case 2: return StoreDetails();
-      case 3: return BankStatementScreen();
-      case 4: return WeeksPurchaseScreen();
-      case 5: return Home(index: 0,);
+      case 2: return StoreOwnerDetails();
+      case 3: return GurrantorDetails();
+      case 4: return StoreDetails();
+      case 5: return BankStatementScreen();
+      case 6: return WeeksPurchaseScreen();
+      case 7: return Home(index: 0,);
     }
   }
 

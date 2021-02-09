@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:Mitra/Screens/LocationPicker.dart';
-import 'package:Mitra/Screens/Verification/BankStatementsScreen.dart';
+import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
 import 'package:Mitra/Services/Fluttertoast.dart';
-import 'package:Mitra/Services/StoreDetails.dart';
+import 'package:Mitra/Services/Gurrantor.dart' as gurrantor;
+import 'package:Mitra/Services/KYC.dart';
 import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +12,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class StoreDetails extends StatefulWidget {
+class GurrantorDetails extends StatefulWidget {
   @override
-  _StoreDetailsState createState() => _StoreDetailsState();
+  _GurrantorDetailsState createState() => _GurrantorDetailsState();
 }
 
-class _StoreDetailsState extends State<StoreDetails> {
+class _GurrantorDetailsState extends State<GurrantorDetails> {
+  double annualIncome;
   var location = [];
-  var type = "Grocery";
+  var gender = "Male";
   String firstLine;
   String secondLine;
   double latitude;
@@ -27,17 +29,26 @@ class _StoreDetailsState extends State<StoreDetails> {
   String city;
   String state;
   var value;
+  
   SharedPreferences prefs;
-  String gstin;
-  int contactNumber;
-  String storeName;
-  String rent = "Purchased";
-  double areaPerSqft;
+  File aadharFront;
+  File aadharBack;
+  
+  String aadharFrontURL;
+  String aadharBackURL;
+  String path;
+
+  var validAadharNo = false;
+  final picker = ImagePicker();
+
+  String aadharNo;
+  String name;
+  String mobileNumber;
 
   @override
   void initState() {
     super.initState();
-    location.insert(0, "Store Address");
+    location.insert(0, "Residence Address");
     init();
   }
 
@@ -69,7 +80,6 @@ class _StoreDetailsState extends State<StoreDetails> {
   File electricityBill;
   String electricityBillURL;
   double electricityBillAmount;
-  final picker = ImagePicker();
   
   @override
   Widget build(BuildContext context) {
@@ -110,7 +120,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                     margin: EdgeInsets.only(top: 15),
                     child: ListTile(
                       title: Text(
-                        "4. Store Details",
+                        "3. Gurrantor Details",
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             fontSize: 16,
@@ -154,14 +164,14 @@ class _StoreDetailsState extends State<StoreDetails> {
                     child: TextField(
                         decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: "GSTIN",
+                            hintText: "Name",
                             hintStyle:
                                 TextStyle(color: grey, fontSize: 16)),
                             style: TextStyle(
                               fontSize: 16,
                             ),
                             onChanged: (value) {
-                                  this.gstin = value;
+                                  this.name = value;
                             },
                         
                         ),
@@ -187,15 +197,16 @@ class _StoreDetailsState extends State<StoreDetails> {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: "Contact Number",
+                            hintText: "Mobile Number",
                             hintStyle:
                                 TextStyle(color: grey, fontSize: 16)),
                             style: TextStyle(
                               fontSize: 16,
                             ),
                             onChanged: (value) {
-                                  this.contactNumber = int.parse(value);
+                                  this.mobileNumber = value;
                             },
+                        
                         ),
                   ),
                 ),
@@ -216,55 +227,23 @@ class _StoreDetailsState extends State<StoreDetails> {
                       horizontal: 15,
                     ),
                     child: TextField(
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: "Store Name",
+                            hintText: "Annual Income",
                             hintStyle:
                                 TextStyle(color: grey, fontSize: 16)),
                             style: TextStyle(
                               fontSize: 16,
                             ),
                             onChanged: (value) {
-                                  this.storeName = value;
+                                  this.annualIncome = double.parse(value);
                             },
                         
                         ),
                   ),
                 ),
               ),
-              Container(
-                width: 0.8 * screenWidth,
-                margin: EdgeInsets.symmetric(vertical: 0.01 * screenHeight),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(color: primaryColor, blurRadius: 15.0, spreadRadius: -8),
-                  ],
-                ),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15,
-                    ),
-                    child: TextField(
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Area Per Sqft",
-                            hintStyle:
-                                TextStyle(color: grey, fontSize: 16)),
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                            onChanged: (value) {
-                                  this.areaPerSqft = double.parse(value);
-                            },
-                        ),
-                  ),
-                ),
-              ),
-            
               Card(
                 margin: EdgeInsets.symmetric(vertical: 0.01 * screenHeight),
                 child: GestureDetector(
@@ -301,7 +280,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                       horizontal: 15,
                     ),
                     child: DropdownButton<String>(
-                            value: this.type,
+                            value: this.gender,
                             icon: Icon(Icons.arrow_downward),
                             iconSize: 24,
                             elevation: 16,
@@ -310,50 +289,10 @@ class _StoreDetailsState extends State<StoreDetails> {
                             ),
                             onChanged: (String newValue) {
                               setState(() {
-                                this.type = newValue.toUpperCase();
+                                this.gender = newValue.toUpperCase();
                               });
                             },
-                            items: <String>['Grocery', 'Clothing', 'Medical', 'VegetableAndFruit']
-                              .map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              })
-                              .toList(),
-                          ),
-                  ),
-                ),
-              ),
-              Container(
-                width: 0.8 * screenWidth,
-                margin: EdgeInsets.symmetric(vertical: 0.01 * screenHeight),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(color: primaryColor, blurRadius: 15.0, spreadRadius: -8),
-                  ],
-                ),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15,
-                    ),
-                    child: DropdownButton<String>(
-                            value: this.rent,
-                            icon: Icon(Icons.arrow_downward),
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(
-                              color: Colors.black
-                            ),
-                            onChanged: (String newValue) {
-                              setState(() {
-                                this.rent = newValue.toUpperCase();
-                              });
-                            },
-                            items: <String>['Purchased', 'Rented']
+                            items: <String>['Male', 'Female', 'Other']
                               .map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
@@ -378,7 +317,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                         Padding(
                           padding: EdgeInsets.only(top: 15, left: 15, bottom: 5),
                           child: Text(
-                            "Electricity Bill",
+                            "Aadhar Number",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -389,7 +328,6 @@ class _StoreDetailsState extends State<StoreDetails> {
                         Padding(
                           padding: EdgeInsets.only(left: 8, right: 8, bottom: 15),
                           child: TextFormField(
-                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(80),
@@ -402,10 +340,18 @@ class _StoreDetailsState extends State<StoreDetails> {
                               fillColor: darkGrey,
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 17, vertical: 12),
-                              hintText: "Enter electricity bill amount of home",
+                              hintText: "Enter 12-digit aadhar number",
                             ),
                             onChanged: (value) {
-                                    this.electricityBillAmount = double.parse(value);
+                              if (value.length >= 12){
+                                bool status = aadharCardVerification(value);
+                                if (status == true){
+                                  this.aadharNo = value;
+                                  setState(() {
+                                      validAadharNo = true;
+                                  });
+                                }
+                              }
                             },
                           ),
                         ),
@@ -415,24 +361,28 @@ class _StoreDetailsState extends State<StoreDetails> {
                             RaisedButton(shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
-                                var path = await getImage();
-                                // bool status = await panCardMatch(path, this.electrictiyBillAmount);
-                                bool status = true;
-                                if (status == true){
-                                  setState(() {
-                                    electricityBill  = File(path);
-                                  });
-                                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                                  String id = prefs.getString("firebase_id");
-                                  electricityBillURL = await uploadFile(electricityBill, "$id/ElectricityBill/Store");
-                                  showToast("Electricity Bill Image Uploaded", grey, primaryColor);
+                                if (validAadharNo == false)
+                                  showToast("Type Aadhar No first", grey, error);
+                                else{
+                                  path = await getImage();
+
+                                  bool status = await aadharCardMatch(path, this.aadharNo);
+                                  if (status == true){
+                                    setState(() {
+                                      aadharFront = File(path);
+                                    });
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    String id = prefs.getString("firebase_id");
+                                    aadharFrontURL = await uploadFile(aadharFront, "$id/Gurrantor/Aadhar/");
+                                    showToast("Aadhar Card Front Image Uploaded", grey, primaryColor);
+                                  }
                                 }
                               },
                               color: primaryColor,
                               child: RichText(
                                 text: TextSpan(children: <TextSpan>[
                                   TextSpan(
-                                      text: "Electricity Bill",
+                                      text: "Aadhar Front",
                                       style: TextStyle(
                                           letterSpacing: 1,
                                           color: white,
@@ -442,9 +392,51 @@ class _StoreDetailsState extends State<StoreDetails> {
                               ),
                             ),
                             Center(
-                              child: electricityBill == null
+                              child: aadharFront == null
                                   ? SizedBox()
-                                  : Image.file(electricityBill,
+                                  : Image.file(aadharFront,
+                                      height: 45.0,
+                                      width: 45.0)
+                                    ), 
+                            RaisedButton(shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(35.0)),
+                              onPressed: () async{
+                                if (aadharNo == null)
+                                  showToast("Type Aadhar No first", grey, error);
+                                else{
+                                  path = await getImage();
+                                  // bool status = await aadharCardMatch(path, this.aadharNo);
+                                  // print(status);
+                                  bool status = true;
+                                  if (status == true){
+                                    setState(() {
+                                      aadharBack  = File(path);
+                                    });
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    String id = prefs.getString("firebase_id");
+                                    aadharBackURL = await uploadFile(aadharBack, "$id/Gurrantor/Aadhar/");
+                                    print(aadharBackURL);
+                                    showToast("Aadhar Card Back Image Uploaded", grey, primaryColor);
+                                  }
+                                }
+                              },
+                              color: primaryColor,
+                              child: RichText(
+                                text: TextSpan(children: <TextSpan>[
+                                  TextSpan(
+                                      text: "Aadhar Back",
+                                      style: TextStyle(
+                                          letterSpacing: 1,
+                                          color: white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold)),
+                                ]),
+                              ),
+                            ),
+                            Center(
+                              child: aadharBack == null
+                                  ? SizedBox()
+                                  : Image.file(aadharBack,
                                       height: 45.0,
                                       width: 45.0)
                                     ),
@@ -455,18 +447,108 @@ class _StoreDetailsState extends State<StoreDetails> {
                     ),
                     
                     ),
-                    
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)
+                ),
+                shadowColor: primaryColor,
+                elevation: 2.0,
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 15, left: 15, bottom: 5),
+                    child: Text(
+                      "Electricity Bill",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 8, right: 8, bottom: 15),
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(80),
+                          borderSide:
+                              const BorderSide(color: Colors.transparent, width: 0.0),
+                        ),
+                        // disabledBorder: new InputBorder(borderSide: BorderSide.none),
+                        hintStyle: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                        filled: true,
+                        fillColor: darkGrey,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 17, vertical: 12),
+                        hintText: "Enter electricity bill amount of home",
+                      ),
+                      onChanged: (value) {
+                              this.electricityBillAmount = double.parse(value);
+                      },
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      RaisedButton(shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(35.0)),
+                        onPressed: () async{
+                          var path = await getImage();
+                          // bool status = await panCardMatch(path, this.electrictiyBillAmount);
+                          bool status = true;
+                          if (status == true){
+                            setState(() {
+                              electricityBill  = File(path);
+                            });
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            String id = prefs.getString("firebase_id");
+                            electricityBillURL = await uploadFile(electricityBill, "$id/Gurrantor/ElectricityBill");
+                            showToast("Electricity Bill Image Uploaded", grey, primaryColor);
+                          }
+                        },
+                        color: primaryColor,
+                        child: RichText(
+                          text: TextSpan(children: <TextSpan>[
+                            TextSpan(
+                                text: "Electricity Bill",
+                                style: TextStyle(
+                                    letterSpacing: 1,
+                                    color: white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold)),
+                          ]),
+                        ),
+                      ),
+                      Center(
+                        child: electricityBill == null
+                            ? SizedBox()
+                            : Image.file(electricityBill,
+                                height: 45.0,
+                                width: 45.0)
+                              ),
+                    ],
+                  ),
+                  SizedBox(height: 15,)
+                ],
+              ),
+              
+              ),
+              
               RaisedButton(
                 onPressed: () async{
-                  bool confirm = confirmation(context, electricityBill);
+                  bool confirm = gurrantor.confirmation(context, electricityBill, aadharFront, aadharBack);
                     if (confirm == true){
-                      int status = await storeRegistration(type, gstin, areaPerSqft, rent, contactNumber, storeName,  firstLine, secondLine, latitude, longitude, pincode, city, state, electricityBillAmount, electricityBillURL);
-                      if (status == 5){
+                      int status = await gurrantor.gurrantorRegistration(name, mobileNumber, gender, annualIncome, firstLine, secondLine, latitude, longitude, pincode, city, state, electricityBillAmount, electricityBillURL, aadharNo, aadharFrontURL, aadharBackURL);
+                      if (status == 4){
                           Navigator.pushReplacement(
                           context,
                           PageTransition(
                               type: PageTransitionType.leftToRightWithFade,
-                              child: BankStatementScreen()));
+                              child: StoreDetails()));
                     }
                   }
               },
