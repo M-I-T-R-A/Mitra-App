@@ -269,7 +269,7 @@ class _BusinessState extends State<BusinessScreen> {
                     ),
                     child: InkWell(
                       onTap: () {
-                      //  Navigator.push(context, MaterialPageRoute(builder: (context) => BusinessOption(category: lst[index].name, name: lst[index].dname, image: lst[index].image)));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => getBusinessOptionsScreens(index)));
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(

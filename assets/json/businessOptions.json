@@ -10,9 +10,9 @@
     "icon": 59811
   },
   {
-    "name": "offers",
-    "displayName": "Offers",
-    "icon": 58007
+    "name": "book-loan",
+    "displayName": "Book Loan",
+    "icon": 57624
   },
   {
     "name": "enquiry",
@@ -20,9 +20,9 @@
     "icon": 58274
   },
   {
-    "name": "current-loan",
-    "displayName": "Current Loan",
-    "icon": 57624
+    "name": "offers",
+    "displayName": "Offers",
+    "icon": 58007
   },
   {
     "name": "contact-us",

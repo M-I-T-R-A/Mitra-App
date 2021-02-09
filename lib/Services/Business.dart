@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:Mitra/Models/Business.dart';
+import 'package:Mitra/Screens/Business/EMICalculator.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 Future<List<BusinessOptions>> getBusinessOptions() async{
@@ -15,7 +16,16 @@ Future<List<BusinessOptions>> getBusinessOptions() async{
   }
   return businessOptions;
 } 
-
+getBusinessOptionsScreens(int index){
+  switch(index){
+      case 0: return EMICalculatorScreen();
+      case 1: return EMICalculatorScreen();
+      case 2: return EMICalculatorScreen();
+      case 3: return EMICalculatorScreen();
+      case 4: return EMICalculatorScreen();
+      case 5: return EMICalculatorScreen();    
+  }  
+}
 Future<List<dynamic>> parseJsonFromAssets(String assetsPath) async {
     return rootBundle.loadString(assetsPath)
         .then((jsonStr) => jsonDecode(jsonStr));
