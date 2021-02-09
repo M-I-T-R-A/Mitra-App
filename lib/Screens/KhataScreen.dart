@@ -1,3 +1,4 @@
+import 'package:Mitra/Screens/AddKhata.dart';
 import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
@@ -13,16 +14,27 @@ class _KhataScreenState extends State<KhataScreen> {
   double w, h, slat, slng;
   SharedPreferences prefs;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  
+  final _formKey = GlobalKey<FormState>();
   void initState() {
     super.initState();
     init();
   }
+  String customerName;
+  int customerMobile;
 
   init() async {
 
   }
+  int value = 2;
 
+  _addItem() {
+    setState(() {
+      value = value + 1;
+    });
+  }
+  _buildRow(int index) {
+    return Text("Item " + index.toString());
+  }
   Widget build(BuildContext context) {
     w = MediaQuery.of(context).size.width;
     h = MediaQuery.of(context).size.height;
@@ -31,15 +43,16 @@ class _KhataScreenState extends State<KhataScreen> {
         key: _scaffoldKey,
         drawer: NavigationDrawer(),
         floatingActionButton: new FloatingActionButton(
+          heroTag: null,
           backgroundColor: primaryColor,
           foregroundColor: Colors.white,
           elevation: 2.0,
-          onPressed:(){  
-            // Navigator.push(
-            //   context,
-            //   PageTransition(
-            //       type: PageTransitionType.bottomToTop,
-            //       child: ));
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              PageTransition(
+                  type: PageTransitionType.leftToRightWithFade,
+                  child: AddKhata()));
           },
           tooltip: 'Add Khata',
           child: new Icon(Icons.add),
