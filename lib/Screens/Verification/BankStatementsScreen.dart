@@ -158,11 +158,10 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                                 ]),
                               ),
                             ),
-                            Expanded(
-                              child: bankStatement == null
+                            Flexible(
+                              child: incomeTax == null
                                   ? SizedBox(height: 15,)
-                                  : Flexible(
-                                      child: new Container(
+                                  : Container(
                                         padding: new EdgeInsets.only(right: 13.0),
                                         child: new Text(
                                           bankStatement.toString().split('/').last,
@@ -175,7 +174,7 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                                           ),
                                         ),
                                       ),
-                                    ))
+                                    )
                           ],
                         ),
                         SizedBox(height: 30,)
@@ -234,11 +233,10 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                                 ]),
                               ),
                             ),
-                            Expanded(
+                            Flexible(
                               child: incomeTax == null
                                   ? SizedBox(height: 15,)
-                                  : Flexible(
-                                      child: new Container(
+                                  : Container(
                                         padding: new EdgeInsets.only(right: 13.0),
                                         child: new Text(
                                           incomeTax.toString().split('/').last,
@@ -251,7 +249,7 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                                           ),
                                         ),
                                       ),
-                                    )) 
+                                    ) 
                           ],
                         ),
                         SizedBox(height: 30,)
