@@ -62,6 +62,7 @@ class _CategoriesState extends State<HomeScreen> {
         key: _scaffoldKey,
         drawer: NavigationDrawer(),
         floatingActionButton: new FloatingActionButton(
+          heroTag: null,
           backgroundColor: primaryColor,
           foregroundColor: Colors.white,
           elevation: 2.0,
@@ -210,16 +211,15 @@ class _CategoriesState extends State<HomeScreen> {
                 }
               ),
             ) : Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.5,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage("assets/images/filter.png"),
-                      fit: BoxFit.cover,
-                      alignment: Alignment.topCenter),
-                ),
-                child: null
-              
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("assets/images/filter.png"),
+                        fit: BoxFit.cover,
+                        alignment: Alignment.topCenter),
+                  ),
+                  child: null
             ),
           ],
         ));
