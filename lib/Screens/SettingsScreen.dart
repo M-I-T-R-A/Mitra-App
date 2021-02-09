@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:Mitra/Models/Customer.dart';
 import 'package:Mitra/Screens/Drawer.dart';
+import 'package:Mitra/Screens/Notifications.dart';
 import 'package:Mitra/Services/Customer.dart';
 import 'package:Mitra/Widget/SettingsDivider.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -75,7 +77,13 @@ class _SettingScreenState extends State<SettingScreen> {
                               size: 24,
                               color: black,
                             ),
-                            onPressed: () => {},
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                PageTransition(
+                                    type: PageTransitionType.leftToRightWithFade,
+                                    child: NotificationScreen()));
+                            },
                           ),
                         )
                       ),

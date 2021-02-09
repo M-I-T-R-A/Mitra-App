@@ -1,5 +1,6 @@
 import 'package:Mitra/Screens/AddKhata.dart';
 import 'package:Mitra/Screens/Drawer.dart';
+import 'package:Mitra/Screens/Notifications.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -91,8 +92,14 @@ class _KhataScreenState extends State<KhataScreen> {
                               Icons.notifications,
                               size: 24,
                               color: black,
-                            ),
-                            onPressed: () => {},
+                            ),  
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                PageTransition(
+                                    type: PageTransitionType.leftToRightWithFade,
+                                    child: NotificationScreen()));
+                            },
                           ),
                         )
                       ),

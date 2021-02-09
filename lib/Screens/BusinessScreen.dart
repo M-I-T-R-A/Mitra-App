@@ -1,6 +1,8 @@
 import 'package:Mitra/Screens/Drawer.dart';
+import 'package:Mitra/Screens/Notifications.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:Mitra/Services/Business.dart';
 
@@ -82,8 +84,14 @@ class _BusinessState extends State<BusinessScreen> {
                               Icons.notifications,
                               size: 24,
                               color: black,
-                            ),
-                            onPressed: () => {},
+                            ),  
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                PageTransition(
+                                    type: PageTransitionType.leftToRightWithFade,
+                                    child: NotificationScreen()));
+                            },
                           ),
                         )
                       ),
