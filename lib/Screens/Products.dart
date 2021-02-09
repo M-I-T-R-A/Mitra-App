@@ -52,14 +52,20 @@ class _ProductsState extends State<Products> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: primaryColor,
-        centerTitle: true,
-        title: Text(widget.name, 
-          style: TextStyle(
-              fontSize: 0.03 * h
-          )
+          title: Text(
+            widget.name,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 0.025*h,
+                color: black,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.3),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0.0,
+          iconTheme: IconThemeData(color: Colors.black),
+          centerTitle: true,  
         ),
-      ),
       body: Column(
         children: [
           Container(
