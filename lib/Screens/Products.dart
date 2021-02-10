@@ -18,7 +18,7 @@ class _ProductsState extends State<Products> {
   var count;
   int cnt = 0;
   SharedPreferences prefs;
-  List<Product> prod, _filteredProducts;
+  List<Product> prod, _filteredProducts = List();
   double w, h;
   void initState() {
     super.initState();
@@ -32,6 +32,7 @@ class _ProductsState extends State<Products> {
       cnt = prefs.getInt('cnt');
     });
     List<Product> _lst = await getProductsByCategory(widget.category);
+    print(_lst);
     setState(() {
       prod = _lst;
       _filteredProducts = _lst;
@@ -113,7 +114,7 @@ class _ProductsState extends State<Products> {
               ),
             ),
           ),
-          _filteredProducts != null ? Expanded(
+          _filteredProducts.length != 0 ? Expanded(
             child: ListView.builder(
               padding: EdgeInsets.only(top: 0),
               itemCount: _filteredProducts.length,
@@ -152,9 +153,15 @@ class _ProductsState extends State<Products> {
                                     fontSize: 16,
                                   )
                                 ),
-                                Text(_filteredProducts[index].desc,
+                                Text(_filteredProducts[index].unit,
                                   style: TextStyle(
                                     fontSize: 10, 
+                                    color: grey
+                                  )
+                                ),
+                                Text("Stock: " + _filteredProducts[index].quantity.toString(),
+                                  style: TextStyle(
+                                    fontSize: 12, 
                                     color: grey
                                   )
                                 )
@@ -172,7 +179,7 @@ class _ProductsState extends State<Products> {
                               cnt++;
                               updateTotal();
                             }),
-                            cs.addData(prod[index].id ,prod[index].name, count[index], prod[index].desc)
+                            cs.addData(prod[index].name, count[index], prod[index].unit)
                           },
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15)

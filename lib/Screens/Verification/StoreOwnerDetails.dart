@@ -9,6 +9,7 @@ import 'package:Mitra/Services/StoreDetails.dart';
 import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -210,7 +211,7 @@ class _StoreOwnerDetailsState extends State<StoreOwnerDetails> {
                             ),
                             onChanged: (String newValue) {
                               setState(() {
-                                this.gender = newValue.toUpperCase();
+                                this.gender = newValue;
                               });
                             },
                             items: <String>['Male', 'Female', 'Other']
@@ -302,8 +303,13 @@ class _StoreOwnerDetailsState extends State<StoreOwnerDetails> {
                               ),
                             ),
                             Center(
-                              child: electricityBill == null
-                                  ? SizedBox()
+                              child: electricityBillURL == null
+                                  ? Container(
+                                      child: SpinKitDoubleBounce(
+                                        color: primaryColor,
+                                        size: 25.0,
+                                      )
+                                    )
                                   : Image.file(electricityBill,
                                       height: 45.0,
                                       width: 45.0)
