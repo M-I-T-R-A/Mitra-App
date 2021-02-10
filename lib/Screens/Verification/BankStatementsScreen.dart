@@ -5,6 +5,7 @@ import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
@@ -159,8 +160,13 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                               ),
                             ),
                             Flexible(
-                              child: incomeTax == null
-                                  ? SizedBox(height: 15,)
+                              child: bankStatementURL == null
+                                  ? Container(
+                                      child: SpinKitDoubleBounce(
+                                        color: primaryColor,
+                                        size: 25.0,
+                                      )
+                                    )
                                   : Container(
                                         padding: new EdgeInsets.only(right: 13.0),
                                         child: new Text(
@@ -234,8 +240,13 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                               ),
                             ),
                             Flexible(
-                              child: incomeTax == null
-                                  ? SizedBox(height: 15,)
+                              child: incomeTaxURL == null
+                                  ? Container(
+                                      child: SpinKitDoubleBounce(
+                                        color: primaryColor,
+                                        size: 25.0,
+                                      )
+                                    )
                                   : Container(
                                         padding: new EdgeInsets.only(right: 13.0),
                                         child: new Text(
@@ -271,7 +282,7 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                             bool confirm = confirmation(context, bankStatement, incomeTax);
                             if (confirm == true){
                               //post method
-                              int status = 6;
+                              int status = await uploadFiles(bankStatementURL, incomeTaxURL);
                               if (status == 6){
                                 Navigator.pushReplacement(
                                 context,
