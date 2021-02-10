@@ -10,7 +10,7 @@ class Category{
 class Product {
   String category;
   String name;
-  int pricePerUnit;
+  double pricePerUnit;
   int quantity;
   String unit;
 
