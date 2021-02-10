@@ -27,13 +27,7 @@ Future<List<Product>> getProductsByCategory(String category) async{
     final url = (server+"shop/product/info/category?category="+category+"&customerId="+id.toString());
     print(url);
     Response response = await get(Uri.encodeFull(url));
-
-    List data = jsonDecode(response.body);
-    
-    for (int i = 0; i < data.length; i++) {
-      Product _prod = new Product.fromJson(jsonDecode(data[i]));
-      prod.add(_prod);
-    }
+    prod = (json.decode(response.body) as List).map((i) => Product.fromJson(i)).toList();
   } catch (e) {
     print(e);
   }
@@ -41,17 +35,15 @@ Future<List<Product>> getProductsByCategory(String category) async{
 }
 
 
-Future<Product> getProductByName(String productName) async{
-  Product prod ;
+Future<List<Product>> getProductByName(String productName) async{
+  List<Product> prod ;
   SharedPreferences prefs = await SharedPreferences.getInstance();
   int id = prefs.getInt("id");
   try {
     final url = (server+"shop/product/info/name?name="+productName+"&customerId="+id.toString());
     print(url);
     Response response = await get(Uri.encodeFull(url));
-
-    var data = jsonDecode(response.body);
-    prod = new Product.fromJson(jsonDecode(data));
+    prod = (json.decode(response.body) as List).map((i) => Product.fromJson(i)).toList();
   } catch (e) {
     print(e);
   }
