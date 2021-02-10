@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:Mitra/Models/Business.dart';
+import 'package:Mitra/Screens/Business/BookLoan.dart';
 import 'package:Mitra/Screens/Business/EMICalculator.dart';
 import 'package:Mitra/Screens/Business/WebView.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -21,7 +22,7 @@ getBusinessOptionsScreens(int index){
   switch(index){
       case 0: return EMICalculatorScreen();
       case 1: return WebViewScreen(name: "Explore Loans", url: "https://www.tvscredit.com/loans/business-loans");
-      case 2: return EMICalculatorScreen();
+      case 2: return BookLoanScreen();
       case 3: return WebViewScreen(name: "Enquiry", url: "https://www.tvscredit.com/get-in-touch#customer-service");
       case 4: return WebViewScreen(name: "CIBIL Score", url: "https://www.bajajfinserv.in/check-free-cibil-score#;");
       case 5: return WebViewScreen(name: "Contact Us", url: "https://www.tvscredit.com/get-in-touch#contact-us");    
