@@ -15,8 +15,8 @@ class _OTPScreenState extends State<OTPScreen> {
   String smsOTP;
   String mobileno;
   String errorMessage = '';
-  int _start = 30;
-  int _current = 30;
+  int _start = 20;
+  int _current = 20;
   LoginFunctions loginFunctions = new LoginFunctions();
   String mode;
 

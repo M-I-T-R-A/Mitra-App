@@ -1,16 +1,8 @@
-import 'package:Mitra/Screens/LandingScreen.dart';
-import 'package:Mitra/Screens/Verification/BankStatementsScreen.dart';
-import 'package:Mitra/Screens/Verification/GurrantorDetails.dart';
-import 'package:Mitra/Screens/Verification/KYCScreen.dart';
-import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
-import 'package:Mitra/Screens/Verification/StoreOwnerDetails.dart';
-import 'package:Mitra/Screens/Verification/WeeksPurchase.dart';
+import 'package:Mitra/Services/Login.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:sembast/sembast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:Mitra/Screens/Home.dart';
 import 'dart:async';
 import 'package:Mitra/Services/init.dart';
 
@@ -143,6 +135,7 @@ class Mitra extends StatefulWidget {
 class _MitraState extends State<Mitra> {
 
   int login = 0;
+  LoginFunctions loginFunctions;
 
   Future checkLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -152,29 +145,17 @@ class _MitraState extends State<Mitra> {
     });
   }
 
-  getHomeScreen(login){
-    switch(login){
-      case 0: return LandingScreen();
-      case 1: return KYCScreen();
-      case 2: return StoreOwnerDetails();
-      case 3: return GurrantorDetails();
-      case 4: return StoreDetails();
-      case 5: return BankStatementScreen();
-      case 6: return WeeksPurchaseScreen();
-      case 7: return Home(index: 0,);
-    }
-  }
-
   void initState() {
     super.initState();
     checkLogin();
     print(login);
+    loginFunctions = new LoginFunctions();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: getHomeScreen(login),
+      home: loginFunctions.getHomeScreen(login),
     );
   }
 }

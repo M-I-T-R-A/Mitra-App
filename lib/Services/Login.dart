@@ -10,6 +10,11 @@ import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:Mitra/Screens/Verification/BankStatementsScreen.dart';
+import 'package:Mitra/Screens/Verification/GurrantorDetails.dart';
+import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
+import 'package:Mitra/Screens/Verification/StoreOwnerDetails.dart';
+import 'package:Mitra/Screens/Verification/WeeksPurchase.dart';
 
 class LoginFunctions{
   String verificationId;
@@ -49,13 +54,13 @@ class LoginFunctions{
           print("Old User Login");
           status = signIn(context,smsOTP,mobileNo).toString();
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setBool('login', true);
           await prefs.setString('mobile', user.phoneNumber.substring(3));
+          var login = checkMobile(mobileNo);
           Navigator.pushReplacement(
             context,
             PageTransition(
                 type: PageTransitionType.rightToLeftWithFade,
-                child: Home(index: 0,)));
+                child: getHomeScreen(login)));
         }
       });
   }
@@ -114,6 +119,36 @@ class LoginFunctions{
           child: LandingScreen()));
   }
 
+  checkMobile(String mobile) async{
+    final url = (server+"customer/check?phoneNumber=" + mobile);
+    
+    Response response = await post(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
+    print(response.body);
+
+    int status = jsonDecode(response.body)["status"];
+    if (status != null){
+      int id = jsonDecode(response.body)["id"];
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('login', status);
+      await prefs.setInt('id', id);
+      return true;
+    }
+    return false;
+  }
+
+  getHomeScreen(login){
+    switch(login){
+      case 0: return LandingScreen();
+      case 1: return KYCScreen();
+      case 2: return StoreOwnerDetails();
+      case 3: return GurrantorDetails();
+      case 4: return StoreDetails();
+      case 5: return BankStatementScreen();
+      case 6: return WeeksPurchaseScreen();
+      case 7: return Home(index: 0,);
+    }
+  }
+
   onVerify(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     
@@ -125,6 +160,7 @@ class LoginFunctions{
       print(token);
       tokenId = token;
     });
+    
     var firstName = prefs.getString("firstName");
     var lastName = prefs.getString("lastName");
 
@@ -142,6 +178,7 @@ class LoginFunctions{
     
     Response response = await post(Uri.encodeFull(url), body: json.encode(user), headers: {"Content-Type": "application/json"});
     print(response.body);
+
     int status = jsonDecode(response.body)["status"];
     int id = jsonDecode(response.body)["id"];
     print(id);

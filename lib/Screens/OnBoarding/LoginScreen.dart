@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:Mitra/Screens/OnBoarding/OTPScreen.dart';
 import 'package:Mitra/Services/Fluttertoast.dart';
+import 'package:Mitra/Services/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
@@ -116,11 +117,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               showToast("Mobile Number is not valid", Colors.grey[200], error);  
                             }
                             else{
-                              // final url = (server+"user/check_mobile/"+this.mobileNo);
-                              // Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
-                              // print(response.body);
-                              // bool status = jsonDecode(response.body)["status"];
-                              bool status = true;
+                              LoginFunctions loginFunction = new LoginFunctions();
+                              bool status = loginFunction.checkMobile(mobileNo);
                               if (status == false){
                                 print("New User Login");
                                 showToast("Seems you are new here, please register", Colors.grey[200], primaryColor);

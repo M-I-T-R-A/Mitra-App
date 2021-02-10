@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:Mitra/Screens/OnBoarding/OTPScreen.dart';
 import 'package:Mitra/Services/Fluttertoast.dart';
+import 'package:Mitra/Services/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
@@ -234,22 +235,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               showToast("Mobile Number is not valid", Colors.grey[200], error);  
                             }
                             else{
-                              // final url = (server+"user/check_mobile/"+this.mobileNo);
-                              // Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
-                              // print(response.body);
-                              // bool status = jsonDecode(response.body)["status"];
-                              bool status = false;
+                              LoginFunctions loginFunction = new LoginFunctions();
+                              bool status = loginFunction.checkMobile(mobileNo);
                               if (status == true){
                                 print("Old User Login");
-                                    Fluttertoast.showToast(
-                                      msg: "Seems you are already registered, please login",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM, 
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.grey[200],
-                                      textColor: primaryColor,
-                                      fontSize: 12.0
-                                  );
+                                showToast( "Seems you are already registered, please login", grey, primaryColor);
                               }
                               else
                               Navigator.pushReplacement(
