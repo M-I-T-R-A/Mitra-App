@@ -7,11 +7,33 @@ class Category{
   Category({this.name, this.dname, this.image});
 }
 
-class Product{
+class Product {
+  String category;
   String name;
-  String desc;
-  int id;
-  Product({this.name, this.desc, this.id});
+  int pricePerUnit;
+  int quantity;
+  String unit;
+
+  Product(
+      {this.category, this.name, this.pricePerUnit, this.quantity, this.unit});
+
+  Product.fromJson(Map<String, dynamic> json) {
+    category = json['category'];
+    name = json['name'];
+    pricePerUnit = json['pricePerUnit'];
+    quantity = json['quantity'];
+    unit = json['unit'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['category'] = this.category;
+    data['name'] = this.name;
+    data['pricePerUnit'] = this.pricePerUnit;
+    data['quantity'] = this.quantity;
+    data['unit'] = this.unit;
+    return data;
+  }
 }
 
 class Cartprod{
