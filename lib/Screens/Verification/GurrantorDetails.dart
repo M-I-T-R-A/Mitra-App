@@ -8,6 +8,7 @@ import 'package:Mitra/Services/KYC.dart';
 import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,8 +58,10 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
     await prefs.setInt('cnt', 0);
   }
 
-  setLocation(BuildContext context) async {
-    setState(() {
+  setStart(var value) async {
+    if(value.length > 0) {
+      setState(() {
+        location = value;
         firstLine = location[0];
         secondLine = location[1];
         latitude = location[2];
@@ -66,13 +69,7 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
         city = location[4];
         state = location[5];
         pincode = location[6];
-    });
-  }
-  
-  setStart(var value) async {
-    if(value.length > 0) {
-      setState(() {
-        location = value;
+
       });
     }
   }
@@ -289,7 +286,7 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
                             ),
                             onChanged: (String newValue) {
                               setState(() {
-                                this.gender = newValue.toUpperCase();
+                                this.gender = newValue;
                               });
                             },
                             items: <String>['Male', 'Female', 'Other']
@@ -392,8 +389,13 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
                               ),
                             ),
                             Center(
-                              child: aadharFront == null
-                                  ? SizedBox()
+                              child: aadharFrontURL == null
+                                  ? Container(
+                                      child: SpinKitDoubleBounce(
+                                        color: primaryColor,
+                                        size: 25.0,
+                                      )
+                                    )
                                   : Image.file(aadharFront,
                                       height: 45.0,
                                       width: 45.0)
@@ -434,8 +436,13 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
                               ),
                             ),
                             Center(
-                              child: aadharBack == null
-                                  ? SizedBox()
+                              child: aadharBackURL == null
+                                  ? Container(
+                                      child: SpinKitDoubleBounce(
+                                        color: primaryColor,
+                                        size: 25.0,
+                                      )
+                                    )
                                   : Image.file(aadharBack,
                                       height: 45.0,
                                       width: 45.0)
@@ -524,8 +531,13 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
                         ),
                       ),
                       Center(
-                        child: electricityBill == null
-                            ? SizedBox()
+                        child: electricityBillURL == null
+                            ? Container(
+                                child: SpinKitDoubleBounce(
+                                  color: primaryColor,
+                                  size: 25.0,
+                                )
+                              )
                             : Image.file(electricityBill,
                                 height: 45.0,
                                 width: 45.0)
