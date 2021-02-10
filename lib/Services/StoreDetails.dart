@@ -52,18 +52,50 @@ storeOwnerRegistration(String gender, double annualIncome, String firstLine, Str
 storeRegistration(String type, String gstin, double areaPerSqft, String rent, int contactNumber, String storeName, String firstLine, String secondLine, double latitude, double longitude, int pincode, String city, String state, double electrictyBill, String electrictyBillPath) async{
   SharedPreferences prefs = await SharedPreferences.getInstance();
   int id = prefs.getInt("id");
-  final user = {
-      "status": 5
-    };
-
-    final url = (server+"customer/update/"+id.toString());
-    print(user);
-    
-    Response response = await put(Uri.encodeFull(url), body: json.encode(user), headers: {"Content-Type": "application/json"});
-    print(response.body);
-    int status = jsonDecode(response.body)["status"];
-    if (status == 5){
-      await prefs.setInt('login', 5);
+  final shop = {
+    "shopName": storeName,
+    "phoneNumber":contactNumber,
+    "gstin": gstin,
+    "area": areaPerSqft,
+    "type": type.toUpperCase(),
+    "ownership": rent.toUpperCase(),
+    "electricityAmount": electrictyBill,
+    "electricityBillImageUrl": electrictyBillPath,
+    "shopAddress": {
+      "city": city,
+      "firstLine": firstLine,
+      "latitude": latitude,
+      "longitude": longitude,
+      "pincode": pincode,
+      "secondLine": secondLine,
+      "state": state
+    },
+    "wareHouse": {
+      "areaOfWareHouses": [
+        areaPerSqft
+      ],
+      "numberOfWareHouses": 1
     }
+  };
+
+  final shopURL = (server+"shop/"+id.toString());
+  print(shop);
+  
+  Response shopsResponse = await post(Uri.encodeFull(shopURL), body: json.encode(shop), headers: {"Content-Type": "application/json"});
+  print(shopsResponse.body);
+
+  final user = {
+    "status": 5
+  };
+
+  final url = (server+"customer/update/"+id.toString());
+  print(user);
+  
+  Response response = await put(Uri.encodeFull(url), body: json.encode(user), headers: {"Content-Type": "application/json"});
+  print(response.body);
+  int status = jsonDecode(response.body)["status"];
+  if (status == 5){
+    await prefs.setInt('login', 5);
+  }
   return status;
 }

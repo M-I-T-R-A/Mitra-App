@@ -7,6 +7,7 @@ import 'package:Mitra/Services/StoreDetails.dart';
 import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,8 +47,10 @@ class _StoreDetailsState extends State<StoreDetails> {
     await prefs.setInt('cnt', 0);
   }
 
-  setLocation(BuildContext context) async {
-    setState(() {
+  setStart(var value) async {
+    if(value.length > 0) {
+      setState(() {
+        location = value;
         firstLine = location[0];
         secondLine = location[1];
         latitude = location[2];
@@ -55,13 +58,6 @@ class _StoreDetailsState extends State<StoreDetails> {
         city = location[4];
         state = location[5];
         pincode = location[6];
-    });
-  }
-  
-  setStart(var value) async {
-    if(value.length > 0) {
-      setState(() {
-        location = value;
       });
     }
   }
@@ -310,7 +306,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                             ),
                             onChanged: (String newValue) {
                               setState(() {
-                                this.type = newValue.toUpperCase();
+                                this.type = newValue;
                               });
                             },
                             items: <String>['Grocery', 'Clothing', 'Medical', 'VegetableAndFruit']
@@ -350,7 +346,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                             ),
                             onChanged: (String newValue) {
                               setState(() {
-                                this.rent = newValue.toUpperCase();
+                                this.rent = newValue;
                               });
                             },
                             items: <String>['Purchased', 'Rented']
@@ -442,8 +438,13 @@ class _StoreDetailsState extends State<StoreDetails> {
                               ),
                             ),
                             Center(
-                              child: electricityBill == null
-                                  ? SizedBox()
+                              child: electricityBillURL == null
+                                  ? Container(
+                                      child: SpinKitDoubleBounce(
+                                        color: primaryColor,
+                                        size: 25.0,
+                                      )
+                                    )
                                   : Image.file(electricityBill,
                                       height: 45.0,
                                       width: 45.0)
