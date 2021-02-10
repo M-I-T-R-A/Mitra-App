@@ -7,6 +7,7 @@ import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:Mitra/Services/WeeksPurchase.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -152,8 +153,13 @@ class _WeeksPurchaseScreenState extends State<WeeksPurchaseScreen> {
                               ),
                             ),
                             Center(
-                              child: weekPurchase == null
-                                  ? SizedBox(height: 15,)
+                              child: weekPurchaseURL == null
+                                  ? Container(
+                                      child: SpinKitDoubleBounce(
+                                        color: primaryColor,
+                                        size: 25.0,
+                                      )
+                                    )
                                   : Image.file(weekPurchase,
                                       height: 45.0,
                                       width: 45.0)
@@ -179,7 +185,7 @@ class _WeeksPurchaseScreenState extends State<WeeksPurchaseScreen> {
                             bool confirm = confirmation(context, weekPurchase);
                             if (confirm == true){
                               //post method
-                              int status = 7;
+                              int status = await uploadFiles(weekPurchaseURL);
                               if (status == 7){
                                 Navigator.pushReplacement(
                                 context,
