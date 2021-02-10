@@ -1,10 +1,10 @@
 import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/Screens/Notifications.dart';
 import 'package:Mitra/Screens/Products.dart';
+import 'package:Mitra/Screens/SearchPicker.dart';
 import 'package:Mitra/Services/Groceries.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +17,7 @@ class _CategoriesState extends State<HomeScreen> {
   double w, h;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<dynamic> allCategoryList;
+  String storeName = "Gupta Kirana";
   void initState() {
     super.initState();
     initstate();
@@ -132,28 +133,25 @@ class _CategoriesState extends State<HomeScreen> {
                 ],
               ),
               child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)
-                ),
+              margin: EdgeInsets.symmetric(vertical: 0.01 * h),
+              child: GestureDetector(
+                onTap: () => {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPicker(header: "Search in " + storeName)))
+                },
                 child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 15, 
-                  ),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      suffixIcon: Icon(Icons.search),
-                      border: InputBorder.none,
-                      hintText: "Search in Gupta Kirana",
-                      hintStyle: TextStyle(
-                        color: grey, 
-                        fontSize: 16)
-                      ),
-                    style: TextStyle(
-                      fontSize: 16,
-                    )
-                  ),
+                  width: 0.8 *  MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                  child: Center(
+                    child: Text("Search in " + storeName,
+                      style: TextStyle(
+                        fontSize: 0.02 *  MediaQuery.of(context).size.height,
+                        color: grey
+                      )
+                    ),
+                  )
                 ),
               ),
+            ),
             ),
             Container(
                 margin: EdgeInsets.only(top: 5),

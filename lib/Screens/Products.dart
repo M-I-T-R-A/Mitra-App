@@ -1,5 +1,6 @@
 import 'package:Mitra/Models/Grocery.dart';
 import 'package:Mitra/Screens/Cart.dart';
+import 'package:Mitra/Screens/SearchPicker.dart';
 import 'package:Mitra/Services/Groceries.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,16 @@ class _ProductsState extends State<Products> {
     await prefs.setInt('cnt', cnt);
   }
 
+  setStart(var value) async {
+      if(value != null) {
+        List<Product> _lst = new List();
+        _lst.add(value);
+        setState(() {
+          _filteredProducts = _lst;
+        });
+      }
+    }
+    
   Widget build(BuildContext context) {
     w = MediaQuery.of(context).size.width;
     h = MediaQuery.of(context).size.height;
@@ -81,35 +92,22 @@ class _ProductsState extends State<Products> {
               ],
             ),
             child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15)
-              ),
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 15, 
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.search, color: primaryColor),
-                    border: InputBorder.none,
-                    hintText: "Search in " + widget.name,
-                    hintStyle: TextStyle(
-                      color: grey, 
-                      fontSize: 18
-                    )
-                  ),
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                  onChanged: (text) {
-                    setState(() {
-                      _filteredProducts = prod
-                        .where((r) => (r.name
-                          .toLowerCase()
-                          .contains(text.trim().toLowerCase()))
-                        ).toList();
-                    });
-                  },
+              margin: EdgeInsets.symmetric(vertical: 0.01 * h),
+              child: GestureDetector(
+                onTap: () => {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPicker(header: "Search in " + widget.name))).then((value) => setStart(value))
+                },
+                child: Container(
+                  width: 0.8 *  MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                  child: Center(
+                    child: Text("Search in " + widget.name,
+                      style: TextStyle(
+                        fontSize: 0.02 *  MediaQuery.of(context).size.height,
+                        color: grey
+                      )
+                    ),
+                  )
                 ),
               ),
             ),
