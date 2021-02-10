@@ -1,3 +1,4 @@
+import 'package:Mitra/Screens/AddProduct.dart';
 import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/Screens/Notifications.dart';
 import 'package:Mitra/Screens/Products.dart';
@@ -153,6 +154,28 @@ class _CategoriesState extends State<HomeScreen> {
               ),
             ),
             ),
+            RaisedButton(
+              onPressed: () async {
+                Navigator.pushReplacement(
+                  context,
+                  PageTransition(
+                      type: PageTransitionType.leftToRightWithFade,
+                      child: AddProductScreen()));
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15)
+              ),
+              color: primaryColor,
+              child: Text(
+                "Add Product",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 0.03 * w
+                ),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 0.04 * w, vertical: 0.01 * h),
+            ),
+            
             Container(
                 margin: EdgeInsets.only(top: 5),
                 child: ListTile(
@@ -218,7 +241,7 @@ class _CategoriesState extends State<HomeScreen> {
               ),
             ) : Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.5,
+                  height: MediaQuery.of(context).size.height * 0.45,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                         image: AssetImage("assets/images/filter.png"),
