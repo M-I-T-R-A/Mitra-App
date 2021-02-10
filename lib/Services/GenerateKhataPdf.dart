@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Mitra/Models/Grocery.dart';
 import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
@@ -7,8 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:open_file/open_file.dart' as open_file;
 
-generateKhata() async{
-  Map<String, dynamic> data ;
+generateKhata(Map<String, dynamic> data) async{
   String path = await createPDF(data); 
   final File file = File(path);
   String firebasePath = await uploadFile(file, path);
@@ -31,9 +31,9 @@ Future<String> createPDF(Map<String, dynamic> data) async {
       bounds: Rect.fromLTWH(0, 0, pageSize.width, pageSize.height),
       pen: PdfPen(PdfColor(142, 170, 219, 255)));
   //Generate PDF grid.
-  final PdfGrid grid = getGrid();
+  final PdfGrid grid = getGrid(data["products"],data["quantity"]);
   //Draw the header section by creating text element
-  final PdfLayoutResult result = drawHeader(page, pageSize, grid);
+  final PdfLayoutResult result = drawHeader(page, pageSize, grid, data["customerName"], data["customerMobile"].toString());
   //Draw grid
   drawGrid(page, grid, result);
   //Add invoice footer
@@ -45,13 +45,15 @@ Future<String> createPDF(Map<String, dynamic> data) async {
   //Save and launch file.
   final Directory directory = await path_provider.getApplicationDocumentsDirectory();
   final String path = directory.path;
-  final File file = File('$path/output.pdf');
+  final DateFormat format = DateFormat.yMMMMd('en_US');
+  final String date = format.format(DateTime.now());
+  final File file = File('$path/invoice_'+data["customerMobile"].toString()+'_'+date+'.pdf');
   await file.writeAsBytes(bytes);
 
   return file.path;
 }
 
-PdfLayoutResult drawHeader(PdfPage page, Size pageSize, PdfGrid grid) {
+PdfLayoutResult drawHeader(PdfPage page, Size pageSize, PdfGrid grid, String customerName, String customerMobile) {
   //Draw rectangle
   page.graphics.drawRectangle(
       brush: PdfSolidBrush(PdfColor(91, 126, 215, 255)),
@@ -67,7 +69,7 @@ PdfLayoutResult drawHeader(PdfPage page, Size pageSize, PdfGrid grid) {
       bounds: Rect.fromLTWH(400, 0, pageSize.width - 400, 90),
       brush: PdfSolidBrush(PdfColor(65, 104, 205)));
  
-  page.graphics.drawString('\$' + getTotalAmount(grid).toString(),
+  page.graphics.drawString('Rs. ' + getTotalAmount(grid).toString(),
       PdfStandardFont(PdfFontFamily.helvetica, 18),
       bounds: Rect.fromLTWH(400, 0, pageSize.width - 400, 100),
       brush: PdfBrushes.white,
@@ -85,11 +87,12 @@ PdfLayoutResult drawHeader(PdfPage page, Size pageSize, PdfGrid grid) {
           lineAlignment: PdfVerticalAlignment.bottom));
   //Create data format and convert it to text.
   final DateFormat format = DateFormat.yMMMMd('en_US');
-  final String invoiceNumber = 'Invoice Number: 2058557939\r\n\r\nDate: ' +
+  final timestamp = DateTime.now().millisecondsSinceEpoch;
+  final String invoiceNumber = 'Invoice Number: $timestamp\r\n\r\nDate: ' +
       format.format(DateTime.now());
   final Size contentSize = contentFont.measureString(invoiceNumber);
-  const String address =
-      'Bill To: \r\n\r\nAbraham Swearegin, \r\n\r\nUnited States, California, San Mateo, \r\n\r\n9920 BridgePointe Parkway, \r\n\r\n9365550136';
+  String address =
+      'Bill To: \r\n\r\n$customerName, \r\n\r\nPhone Number: $customerMobile';
  
   PdfTextElement(text: invoiceNumber, font: contentFont).draw(
       page: page,
@@ -103,7 +106,7 @@ PdfLayoutResult drawHeader(PdfPage page, Size pageSize, PdfGrid grid) {
 }
 
 //Create PDF grid and return
-PdfGrid getGrid() {
+PdfGrid getGrid(List<dynamic> product, List<int> quantity) {
   //Create a PDF grid
   final PdfGrid grid = PdfGrid();
   //Secify the columns count to the grid.
@@ -119,12 +122,9 @@ PdfGrid getGrid() {
   headerRow.cells[2].value = 'Price';
   headerRow.cells[3].value = 'Quantity';
   headerRow.cells[4].value = 'Total';
-  addProducts('CA-1098', 'AWC Logo Cap', 8.99, 2, 17.98, grid);
-  addProducts('LJ-0192', 'Long-Sleeve Logo Jersey,M', 49.99, 3, 149.97, grid);
-  addProducts('So-B909-M', 'Mountain Bike Socks,M', 9.5, 2, 19, grid);
-  addProducts('LJ-0192', 'Long-Sleeve Logo Jersey,M', 49.99, 4, 199.96, grid);
-  addProducts('FK-5136', 'ML Fork', 175.49, 6, 1052.94, grid);
-  addProducts('HL-U509', 'Sports-100 Helmet,Black', 34.99, 1, 34.99, grid);
+  for(int i = 0; i<product.length; i++){
+    addProducts((i+1).toString(), product[i].name, product[i].pricePerUnit, quantity[i], product[i].pricePerUnit*quantity[i], grid);
+  }
   //Apply the grid built-in style.
   grid.applyBuiltInStyle(PdfGridBuiltInStyle.listTable4Accent5);
   grid.columns[1].width = 200;
@@ -199,7 +199,7 @@ void drawFooter(PdfPage page, Size pageSize) {
       Offset(pageSize.width, pageSize.height - 100));
  
   const String footerContent =
-      '800 Interchange Blvd.\r\n\r\nSuite 2501, Austin, TX 78721\r\n\r\nAny Questions? support@adventure-works.com';
+      'Chennai\r\n\r\nTamil Nadu, India\r\n\r\nAny Questions? mitra@tvs-credit.com';
  
   //Added 30 as a margin for the layout.
   page.graphics.drawString(

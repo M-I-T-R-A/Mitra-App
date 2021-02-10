@@ -1,3 +1,4 @@
+import 'package:Mitra/Screens/SearchPicker.dart';
 import 'package:Mitra/Services/GenerateKhataPdf.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
@@ -11,13 +12,11 @@ class AddKhata extends StatefulWidget {
 class _AddKhataState extends State<AddKhata> {
   int customerMobile;
   String customerName;
-  int qty = 5;
-  String name = "Bhindi";
-  String desc = "500g";
   List<dynamic> products = new List();
   double screenWidth,screenHeight;
   List<int> count = new List();
-  String query;
+  String storeName = "Gupta Kirana";
+  double bill = 0;
 
   SharedPreferences prefs;
     void initState() {
@@ -32,6 +31,14 @@ class _AddKhataState extends State<AddKhata> {
       count.add(0);
     }
   }
+
+  setStart(var value) async {
+      if(value != null) {
+        setState(() {
+          products.add(value);
+        });
+      }
+    }
 
   _addItem() {
       showDialog(
@@ -56,51 +63,26 @@ class _AddKhataState extends State<AddKhata> {
                         style: TextStyle(fontSize: 24),
                         textAlign: TextAlign.center
                       ),
-                      TextField(
-                        decoration: InputDecoration(
-                          suffixIcon: Icon(Icons.search, color: primaryColor),
-                          border: InputBorder.none,
-                          hintText: "Search in Gupta Kirana",
-                          hintStyle: TextStyle(
-                            color: grey, 
-                            fontSize: 18
-                          )
+                      Card(
+                        margin: EdgeInsets.symmetric(vertical: 0.01 * screenHeight),
+                        child: GestureDetector(
+                          onTap: () => {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPicker(header: "Search in " + storeName))).then((value) => setStart(value))
+                          },
+                          child: Container(
+                            width: 0.8 *  MediaQuery.of(context).size.width,
+                            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                            child: Center(
+                              child: Text("Search in " + storeName,
+                                style: TextStyle(
+                                  fontSize: 0.02 *  MediaQuery.of(context).size.height,
+                                  color: grey
+                                )
+                              ),
+                            )
+                          ),
                         ),
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                        onChanged: (text) {
-                          setState(() {
-                            this.query = text;
-                          });
-                        },
                       ),
-                      query != null ? Text(query) : Container(),
-                      RaisedButton(
-                        onPressed: () async{
-                          // add product detail to list 
-                            this.products.add({
-                              "name" : "Bhindi",
-                              "description" : "500g",
-                              "qty" : 5,
-                            });
-                            setState((){
-                              name = "Bhindi";
-                              desc = "500g";
-                              qty = 5;
-                            });
-                        },
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        color: primaryColor,
-                        elevation: 5,
-                        child: Text(
-                          "Confirm",
-                          style: TextStyle(color: Colors.white, fontSize: 12),
-                        ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 0.1 * screenWidth, vertical: 0.01 * screenHeight),
-                      )
                     ]
                   )
                 ),
@@ -124,11 +106,11 @@ class _AddKhataState extends State<AddKhata> {
       );
   }
   
-  _buildRow(int index, String productName, String productDescription, int quantity) {
+  _buildRow(int index, List<dynamic> products) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(
-        vertical: 10, 
-        horizontal: 20
+        vertical: 15, 
+        horizontal: 25
       ),
       leading: Container(
         width: 0.6 * screenWidth,
@@ -139,17 +121,34 @@ class _AddKhataState extends State<AddKhata> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(productName,
+                Text(products[index].name,
                   style: TextStyle(
                     fontSize: 16,
                   )
                 ),
-                Text(productDescription,
+                Text(products[index].unit,
                   style: TextStyle(
-                    fontSize: 10, 
+                    fontSize: 12, 
                     color: grey
                   )
-                )
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("Stock: "+products[index].quantity.toString(),
+                      style: TextStyle(
+                        fontSize: 12, 
+                        color: grey
+                      )
+                    ),
+                    SizedBox(width: 25,),
+                    Text("₹ "+products[index].pricePerUnit.toString(),
+                      style: TextStyle(
+                        fontSize: 12, 
+                        color: error
+                      )
+                    )
+                  ],
+                ),
               ],
             ),
           ],
@@ -161,6 +160,7 @@ class _AddKhataState extends State<AddKhata> {
           onPressed: () => {
             setState(() {
               count[index] += 1;
+              bill+=products[index].pricePerUnit;
             }),
           },
           shape: RoundedRectangleBorder(
@@ -188,6 +188,7 @@ class _AddKhataState extends State<AddKhata> {
                 onPressed: () {
                   setState(() {
                     count[index] -= 1;
+                    bill-=products[index].pricePerUnit;
                   });
                 },
                 icon: Icon(Icons.remove)
@@ -203,6 +204,7 @@ class _AddKhataState extends State<AddKhata> {
                 onPressed: () {
                   setState(() {
                     count[index] += 1;
+                    bill+=products[index].pricePerUnit;
                   });
                 },
                 icon: Icon(Icons.add)),
@@ -334,9 +336,9 @@ class _AddKhataState extends State<AddKhata> {
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: this.products.length,
-                  itemBuilder: (context, index) => this._buildRow(index,this.name,this.desc,this.qty)
+                  itemBuilder: (context, index) => this._buildRow(index,this.products)
               ),
-              Text("Total Bill = ₹ ",
+              Text("Total Bill = ₹ " + bill.toString(),
                 style: TextStyle(
                   fontSize: 18.0,
                   color: black,
@@ -348,8 +350,13 @@ class _AddKhataState extends State<AddKhata> {
                   //post method
                   bool status = true;
                   if (status == true){
-                    Map<String, dynamic> data ;
-                    generateKhata();
+                    Map<String, dynamic> data = {
+                      "customerName": customerName,
+                      "customerMobile": customerMobile,
+                      "products": products,
+                      "quantity": count
+                    };
+                    generateKhata(data);
                   }
               },
               shape: RoundedRectangleBorder(
