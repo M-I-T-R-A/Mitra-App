@@ -1,12 +1,25 @@
 import 'dart:io';
 
+import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:open_file/open_file.dart' as open_file;
 
-Future<void> createPDF() async {
+generateKhata() async{
+  Map<String, dynamic> data ;
+  String path = await createPDF(data); 
+  final File file = File(path);
+  String firebasePath = await uploadFile(file, path);
+  
+  //post request
+  
+  //Launch the file (used open_file package)
+  await open_file.OpenFile.open(path);
+}
+
+Future<String> createPDF(Map<String, dynamic> data) async {
   //Create a PDF document.
   final PdfDocument document = PdfDocument();
   //Add page to the PDF
@@ -34,8 +47,8 @@ Future<void> createPDF() async {
   final String path = directory.path;
   final File file = File('$path/output.pdf');
   await file.writeAsBytes(bytes);
-  //Launch the file (used open_file package)
-  await open_file.OpenFile.open('$path/output.pdf');
+
+  return file.path;
 }
 
 PdfLayoutResult drawHeader(PdfPage page, Size pageSize, PdfGrid grid) {

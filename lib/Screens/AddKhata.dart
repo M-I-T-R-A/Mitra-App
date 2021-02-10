@@ -1,8 +1,6 @@
-import 'package:Mitra/Screens/Home.dart';
-import 'package:Mitra/Screens/Verification/BankStatementsScreen.dart';
+import 'package:Mitra/Services/GenerateKhataPdf.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddKhata extends StatefulWidget {
@@ -18,12 +16,23 @@ class _AddKhataState extends State<AddKhata> {
   String desc = "500g";
   List<dynamic> products = new List();
   double screenWidth,screenHeight;
-  int count = 0;
-  int cnt = 0;
+  List<int> count = new List();
   String query;
 
   SharedPreferences prefs;
-  
+    void initState() {
+    super.initState();
+    print("init");
+    init();
+  }
+
+  init() async {
+    count = new List();
+    for(int i=0;i<10000;i++) {
+      count.add(0);
+    }
+  }
+
   _addItem() {
       showDialog(
         context: context,
@@ -115,10 +124,6 @@ class _AddKhataState extends State<AddKhata> {
       );
   }
   
-  updateTotal() async {
-    await prefs.setInt('cnt', cnt);
-  }
-
   _buildRow(int index, String productName, String productDescription, int quantity) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(
@@ -152,12 +157,10 @@ class _AddKhataState extends State<AddKhata> {
       ),
       trailing: Container(
         width: 0.2 * screenWidth,
-        child: count == 0 ? RaisedButton(
+        child: count[index] == 0 ? RaisedButton(
           onPressed: () => {
             setState(() {
-              count += 1;
-              cnt++;
-              updateTotal();
+              count[index] += 1;
             }),
           },
           shape: RoundedRectangleBorder(
@@ -184,15 +187,13 @@ class _AddKhataState extends State<AddKhata> {
                 color: Colors.white,
                 onPressed: () {
                   setState(() {
-                    count -= 1;
-                    cnt--;
-                    updateTotal();
+                    count[index] -= 1;
                   });
                 },
                 icon: Icon(Icons.remove)
               ),
             ),
-            Text(count.toString()),
+            Text(count[index].toString()),
             CircleAvatar(
               backgroundColor: primaryColor,
               radius: 0.04 * screenWidth,
@@ -201,9 +202,7 @@ class _AddKhataState extends State<AddKhata> {
                 color: Colors.white,
                 onPressed: () {
                   setState(() {
-                    count += 1;
-                    cnt++;
-                    updateTotal();
+                    count[index] += 1;
                   });
                 },
                 icon: Icon(Icons.add)),
@@ -244,6 +243,7 @@ class _AddKhataState extends State<AddKhata> {
           onPressed: _addItem,
           child: Icon(Icons.add),
         ),
+        drawer: Drawer(),
         body: SingleChildScrollView(
           physics: ScrollPhysics(),
           child: Column(
@@ -348,11 +348,8 @@ class _AddKhataState extends State<AddKhata> {
                   //post method
                   bool status = true;
                   if (status == true){
-                    Navigator.pushReplacement(
-                    context,
-                    PageTransition(
-                        type: PageTransitionType.leftToRightWithFade,
-                        child: Home(index: 1)));
+                    Map<String, dynamic> data ;
+                    generateKhata();
                   }
               },
               shape: RoundedRectangleBorder(
