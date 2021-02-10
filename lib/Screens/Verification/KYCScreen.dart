@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:Mitra/Screens/Home.dart';
 import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
+import 'package:Mitra/Screens/Verification/StoreOwnerDetails.dart';
 import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:Mitra/Services/KYC.dart';
 import 'package:Mitra/Services/UploadImageFirestore.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -195,8 +197,13 @@ class _KYCScreenState extends State<KYCScreen> {
                               ),
                             ),
                             Center(
-                              child: aadharFront == null
-                                  ? SizedBox()
+                              child: aadharFrontURL == null
+                                  ? Container(
+                                      child: SpinKitDoubleBounce(
+                                        color: primaryColor,
+                                        size: 25.0,
+                                      )
+                                    )
                                   : Image.file(aadharFront,
                                       height: 45.0,
                                       width: 45.0)
@@ -237,8 +244,13 @@ class _KYCScreenState extends State<KYCScreen> {
                               ),
                             ),
                             Center(
-                              child: aadharBack == null
-                                  ? SizedBox()
+                              child: aadharBackURL == null
+                                  ? Container(
+                                      child: SpinKitDoubleBounce(
+                                        color: primaryColor,
+                                        size: 25.0,
+                                      )
+                                    )
                                   : Image.file(aadharBack,
                                       height: 45.0,
                                       width: 45.0)
@@ -330,8 +342,13 @@ class _KYCScreenState extends State<KYCScreen> {
                               ),
                             ),
                             Center(
-                              child: panFront == null
-                                  ? SizedBox()
+                              child: panFrontURL == null
+                                  ? Container(
+                                      child: SpinKitDoubleBounce(
+                                        color: primaryColor,
+                                        size: 25.0,
+                                      )
+                                    )
                                   : Image.file(panFront,
                                       height: 45.0,
                                       width: 45.0)
@@ -360,7 +377,7 @@ class _KYCScreenState extends State<KYCScreen> {
                                 context,
                                 PageTransition(
                                     type: PageTransitionType.leftToRightWithFade,
-                                    child: StoreDetails()));
+                                    child: StoreOwnerDetails()));
                               }
                             }
                           },
