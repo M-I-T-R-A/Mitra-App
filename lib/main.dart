@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:Mitra/Services/init.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(Main());
   await Init.initialize();
 }
