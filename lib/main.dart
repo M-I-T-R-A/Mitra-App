@@ -1,5 +1,6 @@
 import 'package:Mitra/Services/Login.dart';
 import 'package:Mitra/constants.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,12 +35,26 @@ class _SplashScreenState extends State<SplashScreen> {
 
   String _versionName = 'v 0.0.1';
   final splashDelay = 3;
-
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  
   @override
   void initState() {
     super.initState();
 
     _loadWidget();
+    _firebaseMessaging.configure(
+      onMessage: (message) async{
+          print(message["notification"]["title"]);
+          print("New Notification Alert");
+      },
+      onResume: (message) async{
+        setState(() {
+          print(message["data"]["title"]);
+          print("Application opened from Notification");
+        });
+
+      },
+    );
   }
 
   _loadWidget() async {
@@ -137,7 +152,7 @@ class _MitraState extends State<Mitra> {
 
   int login = 0;
   LoginFunctions loginFunctions;
-
+  
   Future checkLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int _login = prefs.getInt('login') ?? 0;
