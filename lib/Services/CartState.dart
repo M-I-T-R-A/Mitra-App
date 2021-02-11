@@ -44,7 +44,7 @@ class CartState {
   }
 }
 
-updateProduct(List<Cartprod> products) async{
+updateProduct(List<Cartprod> products, String supplierName, String supplierMobile, String supplierImageURL, String date) async{
   List<dynamic> prod = [];
   SharedPreferences prefs = await SharedPreferences.getInstance();
   int id = prefs.getInt("id");
@@ -56,9 +56,23 @@ updateProduct(List<Cartprod> products) async{
     };
     prod.add(_prod);
   } 
-  final url = (server+"customer/update/"+id.toString());
+
+  final purchase = {
+    "customerId": id,
+    "purchasedItemBillDTO": {
+      "imageUrl": supplierImageURL,
+      "supplierMobile": supplierMobile,
+      "supplierName": supplierName
+    },
+    "purchasedItemStockDTO": {
+      "dateOfPurchase": date,
+      "stockOfItems": prod
+    }
+  };
+  print(purchase);
+  final url = (server+"shop/purchase");
   
-  Response response = await put(Uri.encodeFull(url), body: json.encode(prod), headers: {"Content-Type": "application/json"});
+  Response response = await post(Uri.encodeFull(url), body: json.encode(purchase), headers: {"Content-Type": "application/json"});
   print(response.body);
   return response.statusCode == 200; 
 }
