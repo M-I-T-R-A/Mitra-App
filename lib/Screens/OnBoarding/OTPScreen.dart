@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:Mitra/Services/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:Mitra/constants.dart';
 import 'package:quiver/async.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class OTPScreen extends StatefulWidget {
   OTPScreen({@required this.mobileNo, this.mode});
@@ -24,7 +27,16 @@ class _OTPScreenState extends State<OTPScreen> {
     this.mobileno = "+91" + mobileno;
     this.mode = mode;
   }
-    
+    final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+
+  void verify() async {
+    LoginFunctions loginFunction = new LoginFunctions();  
+    Timer(Duration(seconds: 3), () async{
+      loginFunctions.verifyOTP(errorMessage, context, smsOTP, mobileno, mode);
+      _btnController.success();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -147,26 +159,22 @@ class _OTPScreenState extends State<OTPScreen> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
                         height: 45,
-                        child: RaisedButton(
-                          // padding: EdgeInsets.only(bottom: 10),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(35.0)),
-                          onPressed: () {
-                            loginFunctions.verifyOTP(errorMessage, context, smsOTP, mobileno, mode);
-                          },
-                          color: primaryColor,
-                          child: RichText(
-                            text: TextSpan(children: <TextSpan>[
-                              TextSpan(
-                                  text: "Get In",
-                                  style: TextStyle(
-                                      letterSpacing: 1,
-                                      color: white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold)),
-                            ]),
+                        child: RoundedLoadingButton(
+                            color: primaryColor,
+                            borderRadius: 35,
+                            child: Text(
+                              'Get In', 
+                              style: TextStyle(
+                                letterSpacing: 1,
+                                color: white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold
+                                )
+                              ),
+                            controller: _btnController,
+                            onPressed: verify,
+                            width: 200,
                           ),
-                        ),
                       ),
                     ),
                     Row(

@@ -34,7 +34,7 @@ class LoginFunctions{
           timeout: const Duration(seconds: 20),
           verificationCompleted: (AuthCredential phoneAuthCredential) async {
             print("verifying");
-            onVerify(context);
+           // onVerify(context);
           },
           verificationFailed: (AuthException exceptio) {
             print('${exceptio.message}');
@@ -55,7 +55,9 @@ class LoginFunctions{
           status = signIn(context,smsOTP,mobileNo).toString();
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('mobile', user.phoneNumber.substring(3));
-          var login = checkMobile(mobileNo);
+          await checkMobile(user.phoneNumber.substring(3));
+          var login = prefs.getInt('login');
+          print("login status" + login.toString());
           Navigator.pushReplacement(
             context,
             PageTransition(
@@ -111,7 +113,7 @@ class LoginFunctions{
   signOut(BuildContext context)  async{
     await _auth.signOut();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('login', false);
+    await prefs.setInt('login', 0);
     Navigator.pushReplacement(
       context,
       PageTransition(
@@ -122,12 +124,13 @@ class LoginFunctions{
   checkMobile(String mobile) async{
     final url = (server+"customer/check?phoneNumber=" + mobile);
     
-    Response response = await post(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
+    Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
     print(response.body);
 
     int status = jsonDecode(response.body)["status"];
     if (status != null){
       int id = jsonDecode(response.body)["id"];
+      print(status);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setInt('login', status);
       await prefs.setInt('id', id);
@@ -153,6 +156,7 @@ class LoginFunctions{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     
     final FirebaseUser currentUser = await _auth.currentUser();
+    
     FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
     var tokenId;
@@ -163,10 +167,11 @@ class LoginFunctions{
     
     var firstName = prefs.getString("firstName");
     var lastName = prefs.getString("lastName");
+    var phone = currentUser.phoneNumber.substring(3);
 
     final user = {
       "name": firstName + " " + lastName,
-      "phoneNumber": currentUser.phoneNumber.substring(3),
+      "phoneNumber": phone,
       "status": 1,
       // 'firebase_id': currentUser.uid,
       // 'device_token': tokenId

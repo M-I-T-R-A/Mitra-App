@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:Mitra/Screens/OnBoarding/OTPScreen.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:Mitra/constants.dart';
 import 'package:Mitra/Screens/OnBoarding/LoginScreen.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -20,7 +22,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String firstName;
   String lastName;
   String mobileNo;
-    
+    final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+
+  void register() async {
+    if (this.mobileNo.length != 10){
+      _btnController.error();
+      showToast("Mobile Number is not valid", Colors.grey[200], error);  
+      _btnController.reset();
+    }
+    else{
+      LoginFunctions loginFunction = new LoginFunctions();  
+      Timer(Duration(seconds: 3), () async{
+        bool status = await loginFunction.checkMobile(mobileNo);
+        if (status == true){
+          _btnController.error();
+          print("Old User Login");
+          showToast( "Seems you are already registered, please login", grey, primaryColor);        
+          _btnController.reset();
+        }
+        else{
+          _btnController.success();
+          Navigator.pushReplacement(
+              context,
+              PageTransition(
+                  type: PageTransitionType.leftToRightWithFade,
+                  child: OTPScreen(mobileNo: this.mobileNo, mode: "Register")));    
+        }
+      });
+    }
+  } 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -226,41 +257,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,
                         height: 45,
-                        child: RaisedButton(
-                          // padding: EdgeInsets.only(bottom: 10),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(35.0)),
-                          onPressed: () async {
-                            if (this.mobileNo.length != 10){
-                              showToast("Mobile Number is not valid", Colors.grey[200], error);  
-                            }
-                            else{
-                              LoginFunctions loginFunction = new LoginFunctions();
-                              bool status = loginFunction.checkMobile(mobileNo);
-                              if (status == true){
-                                print("Old User Login");
-                                showToast( "Seems you are already registered, please login", grey, primaryColor);
-                              }
-                              else
-                              Navigator.pushReplacement(
-                                  context,
-                                  PageTransition(
-                                      type: PageTransitionType.leftToRightWithFade,
-                                      child: OTPScreen(mobileNo: this.mobileNo, mode: "Register")));
-                            }
-                          },
-                          color: primaryColor,
-                          child: RichText(
-                            text: TextSpan(children: <TextSpan>[
-                              TextSpan(
-                                  text: "Send OTP",
-                                  style: TextStyle(
-                                      color: white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold)),
-                            ]),
+                        child: RoundedLoadingButton(
+                            color: primaryColor,
+                            borderRadius: 35,
+                            child: Text(
+                              'Send OTP!', 
+                              style: TextStyle(
+                                letterSpacing: 1,
+                                color: white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold
+                                )
+                              ),
+                            controller: _btnController,
+                            onPressed: register,
+                            width: 200,
                           ),
-                        ),
                       ),
                     ),
                   ],

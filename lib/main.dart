@@ -155,6 +155,7 @@ class _MitraState extends State<Mitra> {
   
   Future checkLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    //await prefs.setInt("login", 0);
     int _login = prefs.getInt('login') ?? 0;
     setState(() {
       login = _login;
@@ -163,6 +164,10 @@ class _MitraState extends State<Mitra> {
 
   void initState() {
     super.initState();
+    init();
+  }
+
+  void init () async{
     checkLogin();
     print(login);
     loginFunctions = new LoginFunctions();
