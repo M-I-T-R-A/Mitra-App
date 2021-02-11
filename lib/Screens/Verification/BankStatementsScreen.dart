@@ -138,6 +138,8 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
                                 path = await getPdf();
+                                showToast("Uploading your documents, just a moment please...", grey, primaryColor);
+                                  
                                 setState(() {
                                     bankStatement = File(path);
                                   });
@@ -161,12 +163,7 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                             ),
                             Flexible(
                               child: bankStatementURL == null
-                                  ? Container(
-                                      child: SpinKitDoubleBounce(
-                                        color: primaryColor,
-                                        size: 25.0,
-                                      )
-                                    )
+                                  ? Center()
                                   : Container(
                                         padding: new EdgeInsets.only(right: 13.0),
                                         child: new Text(
@@ -218,6 +215,8 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
                                 path = await getPdf();
+                                showToast("Uploading your documents, just a moment please...", grey, primaryColor);
+                                  
                                   setState(() {
                                     incomeTax  = File(path);
                                   });
@@ -241,12 +240,7 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
                             ),
                             Flexible(
                               child: incomeTaxURL == null
-                                  ? Container(
-                                      child: SpinKitDoubleBounce(
-                                        color: primaryColor,
-                                        size: 25.0,
-                                      )
-                                    )
+                                  ? Center()
                                   : Container(
                                         padding: new EdgeInsets.only(right: 13.0),
                                         child: new Text(

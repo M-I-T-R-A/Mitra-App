@@ -190,6 +190,8 @@ class _CartState extends State<Cart> {
                           borderRadius: new BorderRadius.circular(35.0)),
                           onPressed: () async{
                             path = await getImage();
+                            showToast("Uploading your documents, just a moment please...", grey, primaryColor);
+                                  
                               setState(() {
                                 supplierBill = File(path);
                               });

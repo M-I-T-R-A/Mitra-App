@@ -170,7 +170,7 @@ class _KYCScreenState extends State<KYCScreen> {
                                   showToast("Type Aadhar No first", grey, error);
                                 else{
                                   path = await getImage();
-
+                                  showToast("Uploading your documents, just a moment please...", grey, primaryColor);
                                   bool status = await aadharCardMatch(path, this.aadharNo);
                                   if (status == true){
                                     setState(() {
@@ -178,7 +178,9 @@ class _KYCScreenState extends State<KYCScreen> {
                                     });
                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                     String id = prefs.getString("firebase_id");
-                                    aadharFrontURL = await uploadFile(aadharFront, "$id/Aadhar/");
+                                    setState(() async{
+                                      aadharFrontURL = await uploadFile(aadharFront, "$id/Aadhar/");
+                                    });
                                     showToast("Aadhar Card Front Image Uploaded", grey, primaryColor);
                                   }
                                 }
@@ -198,12 +200,7 @@ class _KYCScreenState extends State<KYCScreen> {
                             ),
                             Center(
                               child: aadharFrontURL == null
-                                  ? Container(
-                                      child: SpinKitDoubleBounce(
-                                        color: primaryColor,
-                                        size: 25.0,
-                                      )
-                                    )
+                                  ? Center()
                                   : Image.file(aadharFront,
                                       height: 45.0,
                                       width: 45.0)
@@ -214,7 +211,8 @@ class _KYCScreenState extends State<KYCScreen> {
                                 if (aadharNo == null)
                                   showToast("Type Aadhar No first", grey, error);
                                 else{
-                                  path = await getImage();
+                                    path = await getImage();
+                                  showToast("Uploading your documents, just a moment please...", grey, primaryColor);
                                   // bool status = await aadharCardMatch(path, this.aadharNo);
                                   // print(status);
                                   bool status = true;
@@ -224,8 +222,9 @@ class _KYCScreenState extends State<KYCScreen> {
                                     });
                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                     String id = prefs.getString("firebase_id");
-                                    aadharBackURL = await uploadFile(aadharBack, "$id/Aadhar/");
-                                    print(aadharBackURL);
+                                    setState(() async{
+                                      aadharBackURL = await uploadFile(aadharBack, "$id/Aadhar/");
+                                    });
                                     showToast("Aadhar Card Back Image Uploaded", grey, primaryColor);
                                   }
                                 }
@@ -245,12 +244,7 @@ class _KYCScreenState extends State<KYCScreen> {
                             ),
                             Center(
                               child: aadharBackURL == null
-                                  ? Container(
-                                      child: SpinKitDoubleBounce(
-                                        color: primaryColor,
-                                        size: 25.0,
-                                      )
-                                    )
+                                  ? Center()
                                   : Image.file(aadharBack,
                                       height: 45.0,
                                       width: 45.0)
@@ -316,6 +310,7 @@ class _KYCScreenState extends State<KYCScreen> {
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
                                 path = await getImage();
+                                showToast("Uploading your documents, just a moment please...", grey, primaryColor);                                 
                                 // bool status = await panCardMatch(path, this.panNo);
                                 bool status = true;
                                 if (status == true){
@@ -324,7 +319,9 @@ class _KYCScreenState extends State<KYCScreen> {
                                   });
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                   String id = prefs.getString("firebase_id");
-                                  panFrontURL = await uploadFile(panFront, "$id/PAN/");
+                                  setState(() async{
+                                    panFrontURL = await uploadFile(panFront, "$id/PAN/");
+                                  });
                                   showToast("PAN Card Front Image Uploaded", grey, primaryColor);
                                 }
                               },
@@ -343,12 +340,7 @@ class _KYCScreenState extends State<KYCScreen> {
                             ),
                             Center(
                               child: panFrontURL == null
-                                  ? Container(
-                                      child: SpinKitDoubleBounce(
-                                        color: primaryColor,
-                                        size: 25.0,
-                                      )
-                                    )
+                                  ? Center()
                                   : Image.file(panFront,
                                       height: 45.0,
                                       width: 45.0)

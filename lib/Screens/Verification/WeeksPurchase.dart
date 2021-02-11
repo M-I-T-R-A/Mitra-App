@@ -130,7 +130,8 @@ class _WeeksPurchaseScreenState extends State<WeeksPurchaseScreen> {
                             RaisedButton(shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
-                                path = await getImage();
+                                  path = await getImage();
+                                  showToast("Uploading your documents, just a moment please...", grey, primaryColor);
                                   setState(() {
                                     weekPurchase = File(path);
                                   });
@@ -154,12 +155,7 @@ class _WeeksPurchaseScreenState extends State<WeeksPurchaseScreen> {
                             ),
                             Center(
                               child: weekPurchaseURL == null
-                                  ? Container(
-                                      child: SpinKitDoubleBounce(
-                                        color: primaryColor,
-                                        size: 25.0,
-                                      )
-                                    )
+                                  ? Center()
                                   : Image.file(weekPurchase,
                                       height: 45.0,
                                       width: 45.0)

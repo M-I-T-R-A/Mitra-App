@@ -277,6 +277,8 @@ class _StoreOwnerDetailsState extends State<StoreOwnerDetails> {
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
                                 var path = await getImage();
+                                showToast("Uploading your documents, just a moment please...", grey, primaryColor);
+                                  
                                 // bool status = await electricityBillMatch(path, this.electrictiyBillAmount);
                                 bool status = true;
                                 if (status == true){
@@ -304,12 +306,7 @@ class _StoreOwnerDetailsState extends State<StoreOwnerDetails> {
                             ),
                             Center(
                               child: electricityBillURL == null
-                                  ? Container(
-                                      child: SpinKitDoubleBounce(
-                                        color: primaryColor,
-                                        size: 25.0,
-                                      )
-                                    )
+                                  ? Center()
                                   : Image.file(electricityBill,
                                       height: 45.0,
                                       width: 45.0)

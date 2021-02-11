@@ -362,7 +362,8 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
                                   showToast("Type Aadhar No first", grey, error);
                                 else{
                                   path = await getImage();
-
+                                  showToast("Uploading your documents, just a moment please...", grey, primaryColor);
+                                  
                                   bool status = await aadharCardMatch(path, this.aadharNo);
                                   if (status == true){
                                     setState(() {
@@ -390,12 +391,7 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
                             ),
                             Center(
                               child: aadharFrontURL == null
-                                  ? Container(
-                                      child: SpinKitDoubleBounce(
-                                        color: primaryColor,
-                                        size: 25.0,
-                                      )
-                                    )
+                                  ? Center()
                                   : Image.file(aadharFront,
                                       height: 45.0,
                                       width: 45.0)
@@ -406,7 +402,8 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
                                 if (aadharNo == null)
                                   showToast("Type Aadhar No first", grey, error);
                                 else{
-                                  path = await getImage();
+                                    path = await getImage();
+                                  showToast("Uploading your documents, just a moment please...", grey, primaryColor);
                                   // bool status = await aadharCardMatch(path, this.aadharNo);
                                   // print(status);
                                   bool status = true;
@@ -437,12 +434,7 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
                             ),
                             Center(
                               child: aadharBackURL == null
-                                  ? Container(
-                                      child: SpinKitDoubleBounce(
-                                        color: primaryColor,
-                                        size: 25.0,
-                                      )
-                                    )
+                                  ? Center()
                                   : Image.file(aadharBack,
                                       height: 45.0,
                                       width: 45.0)
@@ -505,6 +497,8 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
                         borderRadius: new BorderRadius.circular(35.0)),
                         onPressed: () async{
                           var path = await getImage();
+                          showToast("Uploading your documents, just a moment please...", grey, primaryColor);
+                                  
                           // bool status = await panCardMatch(path, this.electrictiyBillAmount);
                           bool status = true;
                           if (status == true){
