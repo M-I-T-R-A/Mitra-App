@@ -50,6 +50,18 @@ Future<List<Product>> getProductByName(String productName) async{
   return prod;
 }
 
+addProduct(Product product) async{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int id = prefs.getInt("id");
+  
+  final url = (server+"shop/warehouse/item/"+id.toString());
+  print(product.toJson());
+  Response response = await put(Uri.encodeFull(url), body: json.encode(product.toJson()), headers: {"Content-Type": "application/json"});
+  print(response.body);
+  
+  return response.statusCode == 200 ? true : false;
+}
+
 Future<List<dynamic>> parseJsonFromAssets(String assetsPath) async {
     return rootBundle.loadString(assetsPath)
         .then((jsonStr) => jsonDecode(jsonStr));

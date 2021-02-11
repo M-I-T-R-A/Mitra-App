@@ -1,11 +1,14 @@
+import 'package:Mitra/Models/Store.dart';
 import 'package:Mitra/Screens/AddProduct.dart';
 import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/Screens/Notifications.dart';
 import 'package:Mitra/Screens/Products.dart';
 import 'package:Mitra/Screens/SearchPicker.dart';
 import 'package:Mitra/Services/Groceries.dart';
+import 'package:Mitra/Services/StoreDetails.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,7 +21,7 @@ class _CategoriesState extends State<HomeScreen> {
   double w, h;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<dynamic> allCategoryList;
-  String storeName = "Gupta Kirana";
+  String storeName = "";
   void initState() {
     super.initState();
     initstate();
@@ -27,6 +30,8 @@ class _CategoriesState extends State<HomeScreen> {
   initstate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('login', 7);
+    Store store = await getStoreDetails();
+    storeName = store.shopName;
     List<dynamic> tmp = await getCategory();
     setState(() {
       allCategoryList = tmp;
@@ -74,7 +79,7 @@ class _CategoriesState extends State<HomeScreen> {
           tooltip: 'Filter Categories',
           child: new Icon(Icons.filter_alt),
         ),
-        body: Column(
+        body: storeName !=null ? Column(
           children: [
             Stack(
               children: <Widget>[
@@ -93,7 +98,7 @@ class _CategoriesState extends State<HomeScreen> {
                           ),
                         ),
                         title: Text(
-                          "Gupta Kirana",
+                          storeName,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 18,
@@ -175,7 +180,6 @@ class _CategoriesState extends State<HomeScreen> {
               ),
               padding: EdgeInsets.symmetric(horizontal: 0.04 * w, vertical: 0.01 * h),
             ),
-            
             Container(
                 margin: EdgeInsets.only(top: 5),
                 child: ListTile(
@@ -251,7 +255,13 @@ class _CategoriesState extends State<HomeScreen> {
                   child: null
             ),
           ],
-        ));
+        ) : Container(
+            child: SpinKitDoubleBounce(
+              color: primaryColor,
+              size: 50.0,
+            )
+          ), 
+    );
   }
 }
 

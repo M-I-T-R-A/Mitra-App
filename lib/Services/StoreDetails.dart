@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:Mitra/Models/Store.dart';
 import 'package:Mitra/Services/FlushBar.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
@@ -98,4 +99,19 @@ storeRegistration(String type, String gstin, double areaPerSqft, String rent, in
     await prefs.setInt('login', 5);
   }
   return status;
+}
+
+Future<Store> getStoreDetails() async{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int id = prefs.getInt("id");
+  Store store;
+  try {
+    final url = (server+"shop/"+id.toString());
+    print(url);
+    Response response = await get(Uri.encodeFull(url));
+    store = new Store.fromJson(json.decode(response.body));
+  } catch (e) {
+    print(e);
+  }
+  return store;
 }
