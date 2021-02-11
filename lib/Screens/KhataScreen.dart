@@ -102,7 +102,7 @@ class _KhataScreenState extends State<KhataScreen> {
                 ),
               ],
             ),
-            this.khata.length !=0 ? Expanded(
+            this.khata != null ? Expanded(
             child: ListView.builder(
               itemCount: this.khata.length,
               itemBuilder: (context, i) {
