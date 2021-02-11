@@ -3,7 +3,10 @@ import 'package:Mitra/Models/Business.dart';
 import 'package:Mitra/Screens/Business/BookLoan.dart';
 import 'package:Mitra/Screens/Business/EMICalculator.dart';
 import 'package:Mitra/Screens/Business/WebView.dart';
+import 'package:Mitra/constants.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<List<BusinessOptions>> getBusinessOptions() async{
   List<BusinessOptions> businessOptions = [];
@@ -28,6 +31,34 @@ getBusinessOptionsScreens(int index){
       case 5: return WebViewScreen(name: "Contact Us", url: "https://www.tvscredit.com/get-in-touch#contact-us");    
   }  
 }
+
+bookLoan(double amount) async{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int id = prefs.getInt("id");
+  final loan = {
+    "demandedAmount": amount,
+  };
+  final url = (server+"customer/loan/instant/"+id.toString());
+  print(url);
+  Response response = await post(Uri.encodeFull(url), body: json.encode(loan), headers: {"Content-Type": "application/json"});
+  print(response.body);
+  
+  return json.decode(response.body)["approval"];
+}
+
+getCurrentLoan() async{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int id = prefs.getInt("id");
+  
+  final url = (server+"customer/loan/instant/current/"+id.toString());
+  
+  Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
+  print(response.body);
+  if (response.statusCode == 500)
+    return null;
+  return json.decode(response.body);
+}
+
 Future<List<dynamic>> parseJsonFromAssets(String assetsPath) async {
     return rootBundle.loadString(assetsPath)
         .then((jsonStr) => jsonDecode(jsonStr));

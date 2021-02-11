@@ -1,5 +1,9 @@
+import 'package:Mitra/Screens/Home.dart';
+import 'package:Mitra/Services/Business.dart';
+import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:Mitra/constants.dart';
 import "package:flutter/material.dart";
+import 'package:page_transition/page_transition.dart';
 
 class BookLoanScreen extends StatefulWidget {
   @override
@@ -80,8 +84,21 @@ class BookLoanScreenState extends State<BookLoanScreen> {
               Flexible(
                 fit: FlexFit.loose,
                 child: FlatButton(
-                  onPressed: _handleCalculation,
-                  child: Text("Calculate"),
+                  onPressed: () async {
+                    String approval = await bookLoan(double.parse(_amount.text));
+                    if (approval == "APPROVED")
+                      showToast("Loan is Approved, see options below!", grey, primaryColor);
+                    else if (approval == "WAITING")
+                      showToast("Please wait we are checking, please consider!", grey, primaryColor);
+                    else
+                      showToast("Your loan is rejected!", grey, primaryColor);
+                     Navigator.pushReplacement(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.leftToRightWithFade,
+                          child: Home(index:2)));
+                  },
+                  child: Text("Book Loan"),
                   color: primaryColor,
                   textColor: Colors.white,
                   padding: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 24.0, right: 24.0)
@@ -96,11 +113,6 @@ class BookLoanScreenState extends State<BookLoanScreen> {
       )
     );
   }
-
-  void _handleCalculation() {
-
-  }
-
 
   Widget resultsWidget() {
 

@@ -21,6 +21,7 @@ class _BusinessState extends State<BusinessScreen> {
   double w, h;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<dynamic> lst;
+  Map<String, dynamic> currentLoan;
   void initState() {
     super.initState();
     initstate();
@@ -28,8 +29,10 @@ class _BusinessState extends State<BusinessScreen> {
 
   initstate() async {
     List<dynamic> tmp = await getBusinessOptions();
+    Map<String, dynamic> loan = await getCurrentLoan();
     setState(() {
       lst = tmp;
+      currentLoan = loan;
     });
   }
   List<_SalesData> data = [
@@ -171,7 +174,7 @@ class _BusinessState extends State<BusinessScreen> {
                 ),
               ),
             ),
-            Container(
+            currentLoan != null ? Container(
             height: 0.20 * h,
             decoration: BoxDecoration(
               boxShadow: [ 
@@ -202,11 +205,21 @@ class _BusinessState extends State<BusinessScreen> {
                         fontSize: 18
                       )
                     ),
-                    subtitle: Text('Tenure XX/XX',
-                      style: TextStyle(
-                        fontSize: 12, 
-                        color: grey
-                      )
+                    subtitle: Column(
+                      children: <Widget> [
+                        Text('Demanded Amount: ₹' + currentLoan["demandedAmount"].toString(),
+                          style: TextStyle(
+                            fontSize: 12, 
+                            color: grey
+                          )
+                        ),
+                        Text('Approval Status: ' + currentLoan["approval"].toString(),
+                          style: TextStyle(
+                            fontSize: 12, 
+                            color: grey
+                          )
+                        )
+                      ]
                     ),
                   ),
                   Row(
@@ -254,7 +267,7 @@ class _BusinessState extends State<BusinessScreen> {
                 ],
               )
             ),
-          ),
+          ) : Container(),
             lst != null ? Container(
               child: GridView.builder(
                 itemCount: lst.length,
