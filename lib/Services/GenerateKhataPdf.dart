@@ -1,22 +1,72 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:Mitra/Models/Grocery.dart';
+import 'package:Mitra/Models/Khata.dart';
+import 'package:Mitra/Models/Store.dart';
+import 'package:Mitra/Services/StoreDetails.dart';
 import 'package:Mitra/Services/UploadImageFirestore.dart';
+import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:open_file/open_file.dart' as open_file;
+
+getAllKhata() async{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int id = prefs.getInt("id");
+  
+  final url = (server+"shop/sell/customers/"+ id.toString());
+  print(url);
+  Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
+  print(response.body);
+  
+  List<Khata> khata = (json.decode(response.body) as List).map((i) => Khata.fromJson(i)).toList();
+  
+  return khata;
+}
 
 generateKhata(Map<String, dynamic> data) async{
   String path = await createPDF(data); 
+
   final File file = File(path);
+  
   String firebasePath = await uploadFile(file, path);
   
   //post request
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int id = prefs.getInt("id");
   
-  //Launch the file (used open_file package)
-  await open_file.OpenFile.open(path);
+  List<dynamic> soldItems = new List();
+  for(int i =0 ; i< data["products"].length; i++){
+    soldItems.add({
+        "category": data["products"][i].category,
+        "name": data["products"][i].name,
+        "pricePerUnit": data["products"][i].pricePerUnit,
+        "quantity": data["quantity"][i],
+        "unit": data["products"][i].unit
+    });
+  }
+
+  final khata = {
+    "customerId": id,
+    "invoiceImageUrl": firebasePath,
+    "amountPaid": data['customerAmount'],
+    "shopCustomer": {
+      "name": data["customerName"],
+      "phoneNumber": data["customerMobile"].toString()
+    },
+    "soldItems": soldItems
+  };
+  print(khata);
+  final url = (server+"shop/sell");
+  print(url);
+  Response response = await post(Uri.encodeFull(url), body: json.encode(khata), headers: {"Content-Type": "application/json"});
+  print(response.body);
+  
+  return response.statusCode == 200 ? path : null;
 }
 
 Future<String> createPDF(Map<String, dynamic> data) async {
@@ -37,7 +87,7 @@ Future<String> createPDF(Map<String, dynamic> data) async {
   //Draw grid
   drawGrid(page, grid, result);
   //Add invoice footer
-  drawFooter(page, pageSize);
+  await drawFooter(page, pageSize);
   //Save and launch the document
   final List<int> bytes = document.save();
   //Dispose the document.
@@ -181,7 +231,7 @@ void drawGrid(PdfPage page, PdfGrid grid, PdfLayoutResult result) {
           result.bounds.bottom + 10,
           quantityCellBounds.width,
           quantityCellBounds.height));
-  page.graphics.drawString(getTotalAmount(grid).toString(),
+  page.graphics.drawString("Rs." + getTotalAmount(grid).toString(),
       PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
       bounds: Rect.fromLTWH(
           totalPriceCellBounds.left,
@@ -190,7 +240,13 @@ void drawGrid(PdfPage page, PdfGrid grid, PdfLayoutResult result) {
           totalPriceCellBounds.height));
 }
 
-void drawFooter(PdfPage page, Size pageSize) {
+Future<void> drawFooter(PdfPage page, Size pageSize) async{
+  //get Store Info
+  Store store = await getStoreDetails();
+  String storeName = store.shopName;
+  String storeMobile = store.phoneNumber;
+  String storeAddress = store.shopAddress.firstLine + ", " + store.shopAddress.secondLine + ', '+ store.shopAddress.city;
+  
   final PdfPen linePen =
       PdfPen(PdfColor(142, 170, 219, 255), dashStyle: PdfDashStyle.custom);
   linePen.dashPattern = <double>[3, 3];
@@ -198,8 +254,8 @@ void drawFooter(PdfPage page, Size pageSize) {
   page.graphics.drawLine(linePen, Offset(0, pageSize.height - 100),
       Offset(pageSize.width, pageSize.height - 100));
  
-  const String footerContent =
-      'Chennai\r\n\r\nTamil Nadu, India\r\n\r\nAny Questions? mitra@tvs-credit.com';
+  String footerContent =
+      '$storeName, \r\n\r$storeMobile \r\n\r$storeAddress\r\n\r\nAny Questions? mitra@tvs-credit.com';
  
   //Added 30 as a margin for the layout.
   page.graphics.drawString(

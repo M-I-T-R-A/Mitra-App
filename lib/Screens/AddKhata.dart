@@ -1,8 +1,14 @@
+import 'package:Mitra/Models/Store.dart';
+import 'package:Mitra/Screens/Home.dart';
 import 'package:Mitra/Screens/SearchPicker.dart';
 import 'package:Mitra/Services/GenerateKhataPdf.dart';
+import 'package:Mitra/Services/StoreDetails.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:open_file/open_file.dart' as open_file;
 
 class AddKhata extends StatefulWidget {
   @override
@@ -15,8 +21,9 @@ class _AddKhataState extends State<AddKhata> {
   List<dynamic> products = new List();
   double screenWidth,screenHeight;
   List<int> count = new List();
-  String storeName = "Gupta Kirana";
+  String storeName = "";
   double bill = 0;
+  double customerAmount = 0;
 
   SharedPreferences prefs;
     void initState() {
@@ -26,6 +33,8 @@ class _AddKhataState extends State<AddKhata> {
   }
 
   init() async {
+    Store store = await getStoreDetails();
+    storeName = store.shopName;
     count = new List();
     for(int i=0;i<10000;i++) {
       count.add(0);
@@ -246,7 +255,7 @@ class _AddKhataState extends State<AddKhata> {
           child: Icon(Icons.add),
         ),
         drawer: Drawer(),
-        body: SingleChildScrollView(
+        body: storeName != null ? SingleChildScrollView(
           physics: ScrollPhysics(),
           child: Column(
             children: [
@@ -325,6 +334,36 @@ class _AddKhataState extends State<AddKhata> {
                   ),
                 ),
               ),
+              Container(
+                width: 0.8 * screenWidth,
+                margin: EdgeInsets.symmetric(vertical: 0.01 * screenHeight),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(color: primaryColor, blurRadius: 15.0, spreadRadius: -8),
+                  ],
+                ),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 15,
+                    ),
+                    child: TextField(
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Customer Given Amount",
+                            hintStyle:
+                                TextStyle(color: grey, fontSize: 16)),
+                        style: TextStyle(
+                              fontSize: 16,
+                            ),
+                            onChanged: (value) {
+                                  this.customerAmount = double.parse(value);
+                            },),
+                  ),
+                ),
+              ),
               Text("Items Purchased",
                 style: TextStyle(
                   fontSize: 18.0,
@@ -353,10 +392,21 @@ class _AddKhataState extends State<AddKhata> {
                     Map<String, dynamic> data = {
                       "customerName": customerName,
                       "customerMobile": customerMobile,
+                      "customerAmount": customerAmount,
+                      "totalBill": bill,
                       "products": products,
                       "quantity": count
                     };
-                    generateKhata(data);
+                    String path = await generateKhata(data);
+                    if (path != null){
+                      //Launch the file (used open_file package)
+                      await open_file.OpenFile.open(path);
+                      Navigator.pushReplacement(
+                        context,
+                        PageTransition(
+                            type: PageTransitionType.leftToRightWithFade,
+                            child: Home(index : 1)));
+                    }
                   }
               },
               shape: RoundedRectangleBorder(
@@ -373,7 +423,12 @@ class _AddKhataState extends State<AddKhata> {
               
           ],
         ),
-      ),
+      ) : Container(
+            child: SpinKitDoubleBounce(
+              color: primaryColor,
+              size: 50.0,
+            )
+          ),
     );
   }
 }
