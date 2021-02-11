@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:Mitra/Screens/LocationPicker.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GurrantorDetails extends StatefulWidget {
@@ -45,7 +47,34 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
   String aadharNo;
   String name;
   String mobileNumber;
+final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
+  void register() async {
+    Timer(Duration(seconds: 3), () async{
+      bool confirm = gurrantor.confirmation(context, electricityBill, aadharFront, aadharBack);
+        if (confirm == true){
+          int status = await gurrantor.gurrantorRegistration(name, mobileNumber, gender, annualIncome, firstLine, secondLine, latitude, longitude, pincode, city, state, electricityBillAmount, electricityBillURL, aadharNo, aadharFrontURL, aadharBackURL);
+          if (status == 4){
+            _btnController.success();
+            Navigator.pushReplacement(
+                context,
+                PageTransition(
+                    type: PageTransitionType.leftToRightWithFade,
+                    child: StoreDetails()));
+            }
+          else{
+            _btnController.error();
+              showToast( "Huh, some glitch, please wait...", grey, primaryColor);        
+            _btnController.reset();  
+          }
+        }
+        else{
+            _btnController.error();
+              showToast( "Some documents are yet to upload...", grey, primaryColor);        
+            _btnController.reset();  
+        }
+      });
+    }
   @override
   void initState() {
     super.initState();
@@ -543,33 +572,22 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
               ),
               
               ),
-              
-              RaisedButton(
-                onPressed: () async{
-                  bool confirm = gurrantor.confirmation(context, electricityBill, aadharFront, aadharBack);
-                    if (confirm == true){
-                      int status = await gurrantor.gurrantorRegistration(name, mobileNumber, gender, annualIncome, firstLine, secondLine, latitude, longitude, pincode, city, state, electricityBillAmount, electricityBillURL, aadharNo, aadharFrontURL, aadharBackURL);
-                      if (status == 4){
-                          Navigator.pushReplacement(
-                          context,
-                          PageTransition(
-                              type: PageTransitionType.leftToRightWithFade,
-                              child: StoreDetails()));
-                    }
-                  }
-              },
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              color: primaryColor,
-              elevation: 5,
-              child: Text(
-                "Confirm",
-                style: TextStyle(color: Colors.white, fontSize: 24),
+              RoundedLoadingButton(
+                color: primaryColor,
+                borderRadius: 35,
+                child: Text(
+                  'Confirm!', 
+                  style: TextStyle(
+                    letterSpacing: 1,
+                    color: white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold
+                    )
+                  ),
+                controller: _btnController,
+                onPressed: register,
+                width: 200,
               ),
-              padding:
-                  EdgeInsets.symmetric(horizontal: 0.1 * screenWidth, vertical: 0.01 * screenHeight),
-            )
-              
           ],
         ),
       ),

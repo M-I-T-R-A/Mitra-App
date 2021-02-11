@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:Mitra/Screens/Home.dart';
 import 'package:Mitra/Services/Business.dart';
 import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:Mitra/constants.dart';
 import "package:flutter/material.dart";
 import 'package:page_transition/page_transition.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class BookLoanScreen extends StatefulWidget {
   @override
@@ -13,6 +16,25 @@ class BookLoanScreen extends StatefulWidget {
 class BookLoanScreenState extends State<BookLoanScreen> {
 
   final TextEditingController _amount = TextEditingController();
+  final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+
+  void register() async {
+    Timer(Duration(seconds: 3), () async{
+        String approval = await bookLoan(double.parse(_amount.text));
+        _btnController.success();
+        if (approval == "APPROVED")
+          showToast("Loan is Approved, see options below!", grey, primaryColor);
+        else if (approval == "WAITING")
+          showToast("Please wait we are checking, please consider!", grey, primaryColor);
+        else
+          showToast("Your loan is rejected!", grey, primaryColor);
+          Navigator.pushReplacement(
+          context,
+          PageTransition(
+              type: PageTransitionType.leftToRightWithFade,
+              child: Home(index:2)));
+      });
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -81,28 +103,27 @@ class BookLoanScreenState extends State<BookLoanScreen> {
                   ),
                 ),
               ),
-              Flexible(
-                fit: FlexFit.loose,
-                child: FlatButton(
-                  onPressed: () async {
-                    String approval = await bookLoan(double.parse(_amount.text));
-                    if (approval == "APPROVED")
-                      showToast("Loan is Approved, see options below!", grey, primaryColor);
-                    else if (approval == "WAITING")
-                      showToast("Please wait we are checking, please consider!", grey, primaryColor);
-                    else
-                      showToast("Your loan is rejected!", grey, primaryColor);
-                     Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.leftToRightWithFade,
-                          child: Home(index:2)));
-                  },
-                  child: Text("Book Loan"),
-                  color: primaryColor,
-                  textColor: Colors.white,
-                  padding: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 24.0, right: 24.0)
-                )
+              Center(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: 45,
+                  child: RoundedLoadingButton(
+                      color: primaryColor,
+                      borderRadius: 35,
+                      child: Text(
+                        'Book Loan!', 
+                        style: TextStyle(
+                          letterSpacing: 1,
+                          color: white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold
+                          )
+                        ),
+                      controller: _btnController,
+                      onPressed: register,
+                      width: 200,
+                    ),
+                ),
               ),
 
               resultsWidget()

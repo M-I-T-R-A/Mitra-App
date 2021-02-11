@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:Mitra/Screens/Home.dart';
 import 'package:Mitra/Screens/HomeScreen.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class WeeksPurchaseScreen extends StatefulWidget {
@@ -18,6 +20,36 @@ class WeeksPurchaseScreen extends StatefulWidget {
 }
 
 class _WeeksPurchaseScreenState extends State<WeeksPurchaseScreen> {
+  final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+
+  void register() async {
+    Timer(Duration(seconds: 3), () async{
+        bool confirm = confirmation(context, weekPurchase);
+        if (confirm == true){
+          //post method
+          int status = await uploadFiles(weekPurchaseURL);
+          if (status == 7){
+            _btnController.success();
+            Navigator.pushReplacement(
+            context,
+            PageTransition(
+                type: PageTransitionType.leftToRightWithFade,
+                child: Home(index: 0)));
+        }
+          else{
+            _btnController.error();
+              showToast( "Huh, some glitch, please wait...", grey, primaryColor);        
+            _btnController.reset();  
+          }
+        }
+        else{
+            _btnController.error();
+              showToast( "Some documents are yet to upload...", grey, primaryColor);        
+            _btnController.reset();  
+        }
+      });
+    }
+
   @override
   void initState() {
     super.initState();
@@ -173,37 +205,22 @@ class _WeeksPurchaseScreenState extends State<WeeksPurchaseScreen> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
                         height: 45,
-                        child: RaisedButton(
-                          // padding: EdgeInsets.only(bottom: 10),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(35.0)),
-                          onPressed: () async {
-                            bool confirm = confirmation(context, weekPurchase);
-                            if (confirm == true){
-                              //post method
-                              int status = await uploadFiles(weekPurchaseURL);
-                              if (status == 7){
-                                Navigator.pushReplacement(
-                                context,
-                                PageTransition(
-                                    type: PageTransitionType.leftToRightWithFade,
-                                    child: Home(index: 0)));
-                              }
-                            }
-                          },
-                          color: primaryColor,
-                          child: RichText(
-                            text: TextSpan(children: <TextSpan>[
-                              TextSpan(
-                                  text: "Confirm",
-                                  style: TextStyle(
-                                      letterSpacing: 1,
-                                      color: white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold)),
-                            ]),
+                        child: RoundedLoadingButton(
+                            color: primaryColor,
+                            borderRadius: 35,
+                            child: Text(
+                              'Confirm!', 
+                              style: TextStyle(
+                                letterSpacing: 1,
+                                color: white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold
+                                )
+                              ),
+                            controller: _btnController,
+                            onPressed: register,
+                            width: 200,
                           ),
-                        ),
                       ),
                     ),
                   ],

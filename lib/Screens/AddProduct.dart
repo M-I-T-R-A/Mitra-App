@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:Mitra/Models/Grocery.dart';
 import 'package:Mitra/Screens/Home.dart';
 import 'package:Mitra/Services/Fluttertoast.dart';
@@ -6,6 +8,7 @@ import 'package:Mitra/constants.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class AddProductScreen extends StatefulWidget {
   @override
@@ -25,6 +28,30 @@ class AddProductScreenState extends State<AddProductScreen> {
     super.initState();
     initstate();
   }
+
+
+  final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+
+  void purchase() async {
+    Timer(Duration(seconds: 3), () async{
+      Product product = new Product(name: _productName.text, pricePerUnit: double.parse(_productPrice.text), unit: _productDescription.text, quantity: int.parse(_productQuantity.text), category: _productCategory);
+      bool status = await addProduct(product);
+      if (status == true){
+        _btnController.success();
+          showToast("Product Added Successfully!", grey, primaryColor);
+          Navigator.pushReplacement(
+            context,
+            PageTransition(
+                type: PageTransitionType.leftToRightWithFade,
+                child: Home(index:0)));
+      }
+      if (status == false){
+          _btnController.error();
+        showToast("Please check your Product!", grey, primaryColor);
+          _btnController.reset();  
+       }
+      });
+    }
 
   initstate() async {
     List<dynamic> tmp = await getCategory();
@@ -234,26 +261,28 @@ class AddProductScreenState extends State<AddProductScreen> {
               ),
                 Flexible(
                 fit: FlexFit.loose,
-                child: FlatButton(
-                  onPressed: () async{
-                      Product product = new Product(name: _productName.text, pricePerUnit: double.parse(_productPrice.text), unit: _productDescription.text, quantity: int.parse(_productQuantity.text), category: _productCategory);
-                      bool status = await addProduct(product);
-                      if (status == true){
-                          showToast("Product Added Successfully!", grey, primaryColor);
-                          Navigator.pushReplacement(
-                            context,
-                            PageTransition(
-                                type: PageTransitionType.leftToRightWithFade,
-                                child: Home(index:0)));
-                      }
-                      if (status == false)
-                        showToast("Please check your Product!", grey, primaryColor);
-                  },
-                  child: Text("Add Product"),
-                  color: primaryColor,
-                  textColor: Colors.white,
-                  padding: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 24.0, right: 24.0)
-                )
+                child: Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: 45,
+                    child: RoundedLoadingButton(
+                        color: primaryColor,
+                        borderRadius: 35,
+                        child: Text(
+                          'Confirm!', 
+                          style: TextStyle(
+                            letterSpacing: 1,
+                            color: white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                            )
+                          ),
+                        controller: _btnController,
+                        onPressed: purchase,
+                        width: 200,
+                      ),
+                  ),
+                ),
               ),
             ],
           )

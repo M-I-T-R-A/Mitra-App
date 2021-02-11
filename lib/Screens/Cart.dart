@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:Mitra/Screens/Home.dart';
 import 'package:Mitra/Services/CartState.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:Mitra/Models/Grocery.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Cart extends StatefulWidget {
@@ -34,6 +36,32 @@ class _CartState extends State<Cart> {
     init();
   }
   
+  final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+
+  void purchase() async {
+    Timer(Duration(seconds: 3), () async{
+        List<dynamic> products = await cs.getAll();
+        bool status = await updateProduct(products, supplierName, supplierMobile, supplierBillURL, selectedDate.toLocal().toString().split(' ')[0]);
+        if (status == true){
+          showToast("Items added!", grey, primaryColor);
+          cs.clear();
+          await prefs.setInt("cnt", 0);
+          _btnController.success();
+          Navigator.pushReplacement(
+          context,
+          PageTransition(
+              type: PageTransitionType.leftToRightWithFade,
+              child: Home(index:0)));
+        }
+        else{
+            _btnController.error();
+          showToast("Please check!", grey, error);
+            _btnController.reset();  
+          }
+      });
+    }
+
+
   init() async {
     prefs = await SharedPreferences.getInstance();    
     setState(() {
@@ -356,35 +384,22 @@ class _CartState extends State<Cart> {
                 trailing: Container(
                   alignment: Alignment.center,
                   width: 0.3 * w,
-                  child: RaisedButton(
-                    onPressed: () async{
-                      List<dynamic> products = await cs.getAll();
-                      bool status = await updateProduct(products, supplierName, supplierMobile, supplierBillURL, selectedDate.toLocal().toString().split(' ')[0]);
-                      if (status == true){
-                        showToast("Items added!", grey, primaryColor);
-                        cs.clear();
-                        await prefs.setInt("cnt", 0);
-                        Navigator.pushReplacement(
-                        context,
-                        PageTransition(
-                            type: PageTransitionType.leftToRightWithFade,
-                            child: Home(index:0)));
-                      }
-                      else
-                        showToast("Please check!", grey, error);
-                     
-                    },
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
+                  child: RoundedLoadingButton(
                     color: primaryColor,
+                    borderRadius: 35,
                     child: Text(
-                      "Checkout",
-                      style:
-                          TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 0.04 * w, vertical: 0.01 * h),
-                  ),
+                      'Checkout !', 
+                      style: TextStyle(
+                        letterSpacing: 1,
+                        color: white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold
+                        )
+                      ),
+                    controller: _btnController,
+                    onPressed: purchase,
+                    width: 200,
+                  ),    
                 ),
               ),
             ),

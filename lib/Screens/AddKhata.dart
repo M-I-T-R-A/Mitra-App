@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:Mitra/Models/Store.dart';
 import 'package:Mitra/Screens/Home.dart';
 import 'package:Mitra/Screens/SearchPicker.dart';
+import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:Mitra/Services/GenerateKhataPdf.dart';
 import 'package:Mitra/Services/StoreDetails.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:open_file/open_file.dart' as open_file;
 
@@ -31,6 +35,36 @@ class _AddKhataState extends State<AddKhata> {
     print("init");
     init();
   }
+final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+
+  void register() async {
+    Timer(Duration(seconds: 3), () async{
+          Map<String, dynamic> data = {
+            "customerName": customerName,
+            "customerMobile": customerMobile,
+            "customerAmount": customerAmount,
+            "totalBill": bill,
+            "products": products,
+            "quantity": count
+          };
+          String path = await generateKhata(data);
+          if (path != null){
+             _btnController.success();
+            //Launch the file (used open_file package)
+            await open_file.OpenFile.open(path);
+            Navigator.pushReplacement(
+              context,
+              PageTransition(
+                  type: PageTransitionType.leftToRightWithFade,
+                  child: Home(index : 1)));
+          }
+          else{
+            _btnController.error();
+              showToast( "Huh, some glitch, please wait...", grey, primaryColor);        
+            _btnController.reset();  
+          }
+      });
+    }
 
   init() async {
     Store store = await getStoreDetails();
@@ -384,43 +418,28 @@ class _AddKhataState extends State<AddKhata> {
                   fontWeight: FontWeight.bold
                 )
               ),    
-              RaisedButton(
-                onPressed: () async{
-                  //post method
-                  bool status = true;
-                  if (status == true){
-                    Map<String, dynamic> data = {
-                      "customerName": customerName,
-                      "customerMobile": customerMobile,
-                      "customerAmount": customerAmount,
-                      "totalBill": bill,
-                      "products": products,
-                      "quantity": count
-                    };
-                    String path = await generateKhata(data);
-                    if (path != null){
-                      //Launch the file (used open_file package)
-                      await open_file.OpenFile.open(path);
-                      Navigator.pushReplacement(
-                        context,
-                        PageTransition(
-                            type: PageTransitionType.leftToRightWithFade,
-                            child: Home(index : 1)));
-                    }
-                  }
-              },
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              color: primaryColor,
-              elevation: 5,
-              child: Text(
-                "Confirm",
-                style: TextStyle(color: Colors.white, fontSize: 24),
+              Center(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: 45,
+                  child: RoundedLoadingButton(
+                      color: primaryColor,
+                      borderRadius: 35,
+                      child: Text(
+                        'Confirm !', 
+                        style: TextStyle(
+                          letterSpacing: 1,
+                          color: white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold
+                          )
+                        ),
+                      controller: _btnController,
+                      onPressed: register,
+                      width: 200,
+                    ),
+                ),
               ),
-              padding:
-                  EdgeInsets.symmetric(horizontal: 0.1 * screenWidth, vertical: 0.01 * screenHeight),
-            )
-              
           ],
         ),
       ) : Container(

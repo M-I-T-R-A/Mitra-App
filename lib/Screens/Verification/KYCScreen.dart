@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:Mitra/Screens/Home.dart';
 import 'package:Mitra/Screens/Verification/StoreDetailsScreen.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tesseract_ocr/tesseract_ocr.dart';
 
@@ -33,6 +35,34 @@ class _KYCScreenState extends State<KYCScreen> {
   
   var validAadharNo = false;
   final picker = ImagePicker();
+  final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+
+  void register() async {
+    Timer(Duration(seconds: 3), () async{
+        bool confirm = confirmation(context, aadharFront, aadharBack, panFront);
+        if (confirm == true){
+          int status = await kycRegistration(aadharNo, panNo, aadharFrontURL, aadharBackURL, panFrontURL);
+          if (status == 2){
+             _btnController.success();
+            Navigator.pushReplacement(
+            context,
+            PageTransition(
+                type: PageTransitionType.leftToRightWithFade,
+                child: StoreOwnerDetails()));
+          }
+          else{
+            _btnController.error();
+              showToast( "Huh, some glitch, please wait...", grey, primaryColor);        
+            _btnController.reset();  
+          }
+        }
+        else{
+            _btnController.error();
+              showToast( "Some documents are yet to upload...", grey, primaryColor);        
+            _btnController.reset();  
+        }
+      });
+    }
 
   String aadharNo;
   String panNo;
@@ -178,9 +208,7 @@ class _KYCScreenState extends State<KYCScreen> {
                                     });
                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                     String id = prefs.getString("firebase_id");
-                                    setState(() async{
-                                      aadharFrontURL = await uploadFile(aadharFront, "$id/Aadhar/");
-                                    });
+                                    aadharFrontURL = await uploadFile(aadharFront, "$id/Aadhar/");
                                     showToast("Aadhar Card Front Image Uploaded", grey, primaryColor);
                                   }
                                 }
@@ -222,9 +250,7 @@ class _KYCScreenState extends State<KYCScreen> {
                                     });
                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                     String id = prefs.getString("firebase_id");
-                                    setState(() async{
                                       aadharBackURL = await uploadFile(aadharBack, "$id/Aadhar/");
-                                    });
                                     showToast("Aadhar Card Back Image Uploaded", grey, primaryColor);
                                   }
                                 }
@@ -319,9 +345,7 @@ class _KYCScreenState extends State<KYCScreen> {
                                   });
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                   String id = prefs.getString("firebase_id");
-                                  setState(() async{
                                     panFrontURL = await uploadFile(panFront, "$id/PAN/");
-                                  });
                                   showToast("PAN Card Front Image Uploaded", grey, primaryColor);
                                 }
                               },
@@ -356,36 +380,22 @@ class _KYCScreenState extends State<KYCScreen> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
                         height: 45,
-                        child: RaisedButton(
-                          // padding: EdgeInsets.only(bottom: 10),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(35.0)),
-                          onPressed: () async {
-                            bool confirm = confirmation(context, aadharFront, aadharBack, panFront);
-                            if (confirm == true){
-                              int status = await kycRegistration(aadharNo, panNo, aadharFrontURL, aadharBackURL, panFrontURL);
-                              if (status == 2){
-                                Navigator.pushReplacement(
-                                context,
-                                PageTransition(
-                                    type: PageTransitionType.leftToRightWithFade,
-                                    child: StoreOwnerDetails()));
-                              }
-                            }
-                          },
-                          color: primaryColor,
-                          child: RichText(
-                            text: TextSpan(children: <TextSpan>[
-                              TextSpan(
-                                  text: "Confirm",
-                                  style: TextStyle(
-                                      letterSpacing: 1,
-                                      color: white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold)),
-                            ]),
+                        child: RoundedLoadingButton(
+                            color: primaryColor,
+                            borderRadius: 35,
+                            child: Text(
+                              'Confirm!', 
+                              style: TextStyle(
+                                letterSpacing: 1,
+                                color: white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold
+                                )
+                              ),
+                            controller: _btnController,
+                            onPressed: register,
+                            width: 200,
                           ),
-                        ),
                       ),
                     ),
                   ],

@@ -11,9 +11,9 @@ Future uploadFile(File _image, String path) async {
    await uploadTask.onComplete;    
    print('File Uploaded');    
    String _uploadedFileURL = (await (await uploadTask.onComplete).ref.getDownloadURL()).toString();
-   Firestore.instance
-      .collection('data')
-      .document()
-      .updateData({"url": _uploadedFileURL});
+  //  Firestore.instance
+  //     .collection('data')
+  //     .document()
+  //     .updateData({"url": _uploadedFileURL});
   return _uploadedFileURL;
  } 

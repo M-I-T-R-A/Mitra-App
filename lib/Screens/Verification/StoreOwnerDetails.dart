@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:Mitra/Screens/LocationPicker.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StoreOwnerDetails extends StatefulWidget {
@@ -33,6 +35,35 @@ class _StoreOwnerDetailsState extends State<StoreOwnerDetails> {
   var value;
   SharedPreferences prefs;
   
+  final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+
+  void register() async {
+    Timer(Duration(seconds: 3), () async{
+      bool confirm = confirmation(context, electricityBill);
+        if (confirm == true){
+          int status = await storeOwnerRegistration(gender, annualIncome, firstLine, secondLine, latitude, longitude, pincode, city, state, electricityBillAmount, electricityBillURL);
+          if (status == 3){
+            _btnController.success();
+            Navigator.pushReplacement(
+            context,
+            PageTransition(
+                type: PageTransitionType.leftToRightWithFade,
+                child: GurrantorDetails()));
+          }
+          else{
+            _btnController.error();
+              showToast( "Huh, some glitch, please wait...", grey, primaryColor);        
+            _btnController.reset();  
+          }
+        }
+        else{
+            _btnController.error();
+              showToast( "Some documents are yet to upload...", grey, primaryColor);        
+            _btnController.reset();  
+        }
+      });
+    }
+
   @override
   void initState() {
     super.initState();
@@ -319,31 +350,28 @@ class _StoreOwnerDetailsState extends State<StoreOwnerDetails> {
                     
                     ),
                     
-              RaisedButton(
-                onPressed: () async{
-                  bool confirm = confirmation(context, electricityBill);
-                    if (confirm == true){
-                      int status = await storeOwnerRegistration(gender, annualIncome, firstLine, secondLine, latitude, longitude, pincode, city, state, electricityBillAmount, electricityBillURL);
-                      if (status == 3){
-                          Navigator.pushReplacement(
-                          context,
-                          PageTransition(
-                              type: PageTransitionType.leftToRightWithFade,
-                              child: GurrantorDetails()));
-                    }
-                  }
-              },
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              color: primaryColor,
-              elevation: 5,
-              child: Text(
-                "Confirm",
-                style: TextStyle(color: Colors.white, fontSize: 24),
+              Center(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: 45,
+                  child: RoundedLoadingButton(
+                      color: primaryColor,
+                      borderRadius: 35,
+                      child: Text(
+                        'Confirm!', 
+                        style: TextStyle(
+                          letterSpacing: 1,
+                          color: white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold
+                          )
+                        ),
+                      controller: _btnController,
+                      onPressed: register,
+                      width: 200,
+                    ),
+                ),
               ),
-              padding:
-                  EdgeInsets.symmetric(horizontal: 0.1 * screenWidth, vertical: 0.01 * screenHeight),
-            )
               
           ],
         ),
