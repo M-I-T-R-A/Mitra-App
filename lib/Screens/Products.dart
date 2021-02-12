@@ -30,7 +30,7 @@ class _ProductsState extends State<Products> {
   init() async {
     prefs = await SharedPreferences.getInstance();    
     setState(() {
-      cnt = prefs.getInt('cnt');
+      cnt = prefs.getInt('cnt') ?? 0;
     });
     List<Product> _lst = await getProductsByCategory(widget.category);
     print(_lst);

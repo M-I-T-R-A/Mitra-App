@@ -302,7 +302,7 @@ class _BusinessState extends State<BusinessScreen> {
                           child: Column(
                             children: [
                               Icon(
-                                IconData(lst[index].icon, fontFamily: 'MaterialIcons'),
+                                 IconData(lst[index].icon, fontFamily: 'MaterialIcons'),
                                 color: primaryColor,
                                 size: 50,),
                               Center(

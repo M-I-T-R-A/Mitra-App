@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:Mitra/Screens/Verification/KYCScreen.dart';
+import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:Mitra/Services/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:Mitra/constants.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:quiver/async.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -32,7 +35,7 @@ class _OTPScreenState extends State<OTPScreen> {
   void verify() async {
     LoginFunctions loginFunction = new LoginFunctions();  
     Timer(Duration(seconds: 3), () async{
-      loginFunctions.verifyOTP(errorMessage, context, smsOTP, mobileno, mode);
+      await loginFunctions.verifyOTP(errorMessage, context, smsOTP, mobileno, mode);
       _btnController.success();
     });
   }

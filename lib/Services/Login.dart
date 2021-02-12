@@ -56,6 +56,7 @@ class LoginFunctions{
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('mobile', user.phoneNumber.substring(3));
           await checkMobile(user.phoneNumber.substring(3));
+          
           var login = prefs.getInt('login');
           print("login status" + login.toString());
           Navigator.pushReplacement(
@@ -134,6 +135,9 @@ class LoginFunctions{
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setInt('login', status);
       await prefs.setInt('id', id);
+      await prefs.setString("firstName", jsonDecode(response.body)["name"].split(" ")[0]);
+      await prefs.setString("lastName", jsonDecode(response.body)["name"].split(" ")[0]);
+          
       return true;
     }
     return false;
@@ -191,11 +195,12 @@ class LoginFunctions{
       await prefs.setInt('login', 1);
       await prefs.setInt('id', id);
       await prefs.setString('mobile', currentUser.phoneNumber.substring(3));
-      Navigator.pushReplacement(
+      
+        Navigator.pushReplacement(
         context,
-        PageTransition(
-            type: PageTransitionType.rightToLeftWithFade,
-            child: KYCScreen()));
+          PageTransition(
+              type: PageTransitionType.rightToLeftWithFade,
+              child: KYCScreen()));
     }
   }
 }
