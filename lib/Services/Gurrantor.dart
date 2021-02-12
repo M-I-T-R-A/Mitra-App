@@ -27,7 +27,7 @@ gurrantorRegistration(String name, String mobile, String gender, double annualIn
     "id": id,
     "instantLoanSurrogates": {
       "id": id,
-      "gurrantor":{
+      "guarantor":{
         "name": name,
         "mobile":mobile,
         "aadhar": aadhar,
@@ -55,6 +55,7 @@ gurrantorRegistration(String name, String mobile, String gender, double annualIn
   
   Response surrogatesResponse = await put(Uri.encodeFull(surrogateURL), body: json.encode(gurrantor), headers: {"Content-Type": "application/json"});
   print(surrogatesResponse.body);
+  print(surrogatesResponse.statusCode);
 
   final user = {
     "status": 4

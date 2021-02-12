@@ -555,12 +555,7 @@ final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonCo
                       ),
                       Center(
                         child: electricityBillURL == null
-                            ? Container(
-                                child: SpinKitDoubleBounce(
-                                  color: primaryColor,
-                                  size: 25.0,
-                                )
-                              )
+                            ? Center()
                             : Image.file(electricityBill,
                                 height: 45.0,
                                 width: 45.0)
