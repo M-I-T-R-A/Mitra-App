@@ -11,8 +11,8 @@ class CartState {
   final Database database = GetIt.I.get();
   final StoreRef store = intMapStoreFactory.store("orders");
 
-  Future addData(String name, int qty, String desc) async {
-    await store.add(database, {'name': name, 'qty': qty, 'desc': desc});
+  Future addData(Product product, int qty) async {
+    await store.add(database, {'name': product.name,'category': product.category, 'qty': qty, 'desc': product.unit, 'price': product.pricePerUnit});
   }
 
   Future<List<Cartprod>> getAll() async{
@@ -21,7 +21,11 @@ class CartState {
       final data = await store.find(database);
       for(int i=0;i<data.length;i++) {
         Cartprod _prod = new Cartprod(
-          name: data[i]["name"], qty: data[i]["qty"], desc: data[i]['desc']);
+          name: data[i]["name"],
+          category: data[i]["category"],
+          qty: data[i]["qty"], 
+          desc: data[i]['desc'],
+          price : data[i]['price']);
           prod.add(_prod);
       }
     } catch (e) {
@@ -52,7 +56,10 @@ updateProduct(List<Cartprod> products, String supplierName, String supplierMobil
   for(int i=0;i<products.length;i++) {
     var _prod = {
       "name": products[i].name,
-      "quantity": products[i].qty
+      "quantity": products[i].qty,
+      "category": products[i].category,
+      "pricePerUnit": products[i].price,
+      "unit": products[i].desc
     };
     prod.add(_prod);
   } 

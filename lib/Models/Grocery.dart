@@ -41,9 +41,14 @@ class Cartprod{
   String name;
   int qty;
   String desc;
+  String category;
+  double price;
   Map toJson() => {
     'id': id,
-    'quantity': qty
+    'quantity': qty,
+    'category': category,
+    'desc': desc,
+    'price': price
   };
-  Cartprod({this.id, this.name, this.qty, this.desc});
+  Cartprod({this.id, this.name, this.category, this.qty, this.desc, this.price});
 }

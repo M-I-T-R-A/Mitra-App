@@ -177,7 +177,7 @@ class _ProductsState extends State<Products> {
                               cnt++;
                               updateTotal();
                             }),
-                            cs.addData(prod[index].name, count[index], prod[index].unit)
+                            cs.addData(prod[index], count[index])
                           },
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15)
