@@ -567,6 +567,8 @@ final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonCo
               ),
               
               ),
+              
+              SizedBox(height: 25,),
               RoundedLoadingButton(
                 color: primaryColor,
                 borderRadius: 35,

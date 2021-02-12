@@ -349,7 +349,7 @@ class _StoreOwnerDetailsState extends State<StoreOwnerDetails> {
                     ),
                     
                     ),
-                    
+              SizedBox(height: 25,),       
               Center(
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8,
