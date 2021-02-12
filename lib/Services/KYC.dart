@@ -72,7 +72,7 @@ kycRegistration(String aadhar, String pan, String aadharFrontURL, String aadharB
   int id = prefs.getInt("id");
   final user = {
       "aadharCardFrontImageUrl": aadharFrontURL,
-      "aadharCardBackImageUrl": aadharFrontURL,
+      "aadharCardBackImageUrl": aadharBackURL,
       "aadhar": aadhar,
       "pan": pan,
       "panCardImageUrl": panFrontURL,
