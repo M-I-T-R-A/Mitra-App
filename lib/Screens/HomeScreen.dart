@@ -21,7 +21,7 @@ class _CategoriesState extends State<HomeScreen> {
   double w, h;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<dynamic> allCategoryList;
-  String storeName = "";
+  String storeName;
   void initState() {
     super.initState();
     initstate();

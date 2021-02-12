@@ -2,6 +2,7 @@ import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/Screens/Notifications.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:Mitra/Services/Business.dart';
@@ -318,7 +319,12 @@ class _BusinessState extends State<BusinessScreen> {
                   );
                 }
               ),
-            ) : Container(), 
+            ) : Container(
+              child: SpinKitDoubleBounce(
+                color: primaryColor,
+                size: 50.0,
+              )
+            ),
           ],
         )
       )

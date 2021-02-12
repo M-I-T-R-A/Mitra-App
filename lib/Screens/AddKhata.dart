@@ -279,6 +279,15 @@ final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonCo
                 letterSpacing: 1.3),
           ),
           backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: new Icon(Icons.cancel),
+            color: error,
+            onPressed: () =>Navigator.pushReplacement(
+              context,
+              PageTransition(
+                  type: PageTransitionType.leftToRightWithFade,
+                  child: Home(index : 1)))
+          ),
           elevation: 0.0,
           iconTheme: IconThemeData(color: Colors.black),
           centerTitle: true,  
@@ -288,7 +297,6 @@ final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonCo
           onPressed: _addItem,
           child: Icon(Icons.add),
         ),
-        drawer: Drawer(),
         body: storeName != null ? SingleChildScrollView(
           physics: ScrollPhysics(),
           child: Column(
