@@ -114,6 +114,11 @@ class ShopAddress {
     data['state'] = this.state;
     return data;
   }
+  
+  @override
+    String toString() {
+      return this.firstLine + ', ' + this.secondLine + ', ' + this.city + ', ' + this.state + ' - ' + this.pincode.toString();
+    }
 }
 
 class ShopRelatedDocs {

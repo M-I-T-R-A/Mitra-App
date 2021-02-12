@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:Mitra/Models/Customer.dart';
+import 'package:Mitra/Models/Store.dart';
 import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/Screens/Notifications.dart';
 import 'package:Mitra/Services/Customer.dart';
+import 'package:Mitra/Services/StoreDetails.dart';
 import 'package:Mitra/Widget/SettingsDivider.dart';
 import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,7 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Customer customer;
+  Store store;
 
   @override
   void initState() {
@@ -29,8 +32,10 @@ class _SettingScreenState extends State<SettingScreen> {
   
   void initialise() async {
     Customer temp = await getCustomerProfile();
+    Store tmp = await getStoreDetails();
     setState(() {
       customer = temp;
+      store = tmp;
     });
   }
 
@@ -173,16 +178,70 @@ class _SettingScreenState extends State<SettingScreen> {
                   ],
                 )
               ),
-              Container(
+            SettingsDivider(dividerTitle: "STORE DETAILS"),
+            Container(
                 margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
-                child: FlatButton(
-                      child : Text("Update Account", style: TextStyle(color: white, fontWeight: FontWeight.w400),),
-                      onPressed: (){
-                        
-                      },
-                      color: primaryColor,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text("Store Name",
+                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text(this.store.shopName ?? "Not Given",
+                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                      ),
+                    )
+                  ],
+                )),
+            Container(
+                margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text("Phone Number",
+                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text("+91 " + this.store.phoneNumber.toString()  ?? "Not Given",
+                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                      ),
+                    )
+                  ],
                 )
               ),
+              Container(
+                margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text("Residence Address",
+                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text(this.store.shopAddress.toString()  ?? "Not Given",
+                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                      ),
+                    )
+                  ],
+                )
+              ),
+              
             Padding(padding: EdgeInsets.all(8)),
             SettingsDivider(dividerTitle: "NOTIFICATIONS"),
             Container(
