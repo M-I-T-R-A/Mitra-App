@@ -17,6 +17,7 @@ class KhataScreen extends StatefulWidget {
 class _KhataScreenState extends State<KhataScreen> {
   double w, h, slat, slng;
   SharedPreferences prefs;
+  double credit = 0,debit = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   void initState() {
     super.initState();
@@ -27,8 +28,17 @@ class _KhataScreenState extends State<KhataScreen> {
   List<Khata> khata;
   init() async {
     List<Khata> temp = await getAllKhata();
+    double cred = 0, debt = 0;
+    for (int i =0; i<temp.length; i++){
+      if (temp[i].shopCustomer.creditAmount > 0)
+        cred += temp[i].shopCustomer.creditAmount;
+      else
+        debt += temp[i].shopCustomer.creditAmount;
+    }
     setState(() {
       khata = temp;
+      credit = cred;
+      debit = debt;
     });
   }
 
@@ -102,6 +112,72 @@ class _KhataScreenState extends State<KhataScreen> {
                 ),
               ],
             ),
+            Container(
+              height: 0.30 * h,
+              decoration: BoxDecoration(
+                boxShadow: [ 
+                  BoxShadow(
+                    color: primaryColor,
+                    blurRadius: 15.0,
+                    spreadRadius: -20
+                  ),
+                ],
+              ),
+              child: Card(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      "Khata Bank",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: black,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.3),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.16,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage("assets/images/money.png"),
+                            //fit: BoxFit.cover,
+                            alignment: Alignment.topCenter),
+                      ),
+                      child: null
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                            "Credit \n₹ " + this.credit.toString(),
+                            style: TextStyle(
+                              color: success,
+                              fontSize: 0.04 * w,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        SizedBox(
+                          width: 0.2 * w,
+                        ),
+                        Text(
+                            "Debit \n₹ " + (-1*this.debit).toString(),
+                            style: TextStyle(
+                              color: error,
+                              fontSize: 0.04 * w,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                      ],
+                    )
+                  ],
+                )
+              ),
+            ), 
             this.khata != null ? Expanded(
             child: ListView.builder(
               itemCount: this.khata.length,
