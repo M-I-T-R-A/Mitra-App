@@ -76,12 +76,19 @@ class _LocationPickerState extends State<LocationPicker> {
     h = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: primaryColor,
-        centerTitle: true,
-        elevation: 0,
-        title: Text(widget.header,
-          style: TextStyle(fontSize: 24),
+        title: Text(
+          widget.header,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 18,
+              color: black,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.3),
         ),
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        iconTheme: IconThemeData(color: Colors.black),
+        centerTitle: true,  
       ),
       body: Column(
         children: [
