@@ -54,8 +54,9 @@ class LoginFunctions{
           print("Old User Login");
           status = signIn(context,smsOTP,mobileNo).toString();
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('mobile', user.phoneNumber.substring(3));
-          await checkMobile(user.phoneNumber.substring(3));
+          var mobile = await user.phoneNumber.substring(3);
+          await prefs.setString('mobile', mobile);
+          await checkMobile(mobile);
           
           var login = prefs.getInt('login');
           print("login status" + login.toString());

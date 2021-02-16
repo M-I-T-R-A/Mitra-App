@@ -38,17 +38,19 @@ class _OTPScreenState extends State<OTPScreen> {
       await loginFunctions.verifyOTP(errorMessage, context, smsOTP, mobileno, mode);
       _btnController.success();
     });
+    _btnController.reset();
   }
 
   @override
   void initState() {
     super.initState();
     initialise();
-    startTimer();
   }
   
   void initialise() async {
     await loginFunctions.verifyPhone(mobileno,context);
+    startTimer();
+    _btnController.reset();
   }
 
   void startTimer() {
@@ -232,10 +234,10 @@ class _OTPScreenState extends State<OTPScreen> {
                           FlatButton(
                             padding: EdgeInsets.only(right: 20),
                             onPressed: () {
-                              initState();
+                              this.initialise();
                             },
                             child: Text(
-                              "Resend in $_start",
+                              "Resend OTP!",
                               style: TextStyle(
                                   color: primaryColor,
                                   fontWeight: FontWeight.bold),

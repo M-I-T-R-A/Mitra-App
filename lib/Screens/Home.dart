@@ -7,6 +7,7 @@ import 'package:Mitra/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class Home extends StatefulWidget {
   final int index;
@@ -17,6 +18,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  GlobalKey _bottomNavigationKey = GlobalKey();
   String firstName;
   
   @override
@@ -25,14 +27,14 @@ class _HomeState extends State<Home> {
     initialise();
   }
 
-  int _selectedIndex =0;
+  int _selectedIndex = 0;
   void initialise() async {
     _selectedIndex = widget.index; 
   }
   
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black);
-  List<Widget> _widgetOptions = [HomeScreen(), KhataScreen(), BusinessScreen(), SettingScreen(), ChatBotScreen()];
+  List<Widget> _widgetOptions = [HomeScreen(), KhataScreen(), ChatBotScreen(), BusinessScreen(), SettingScreen()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -47,55 +49,25 @@ class _HomeState extends State<Home> {
       body: Center(
         child:  _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomAppBar(
-          notchMargin: 2.0,
-          shape: CircularNotchedRectangle(),
-          clipBehavior: Clip.antiAlias,
-          child: SizedBox(
-            height: 100,
-            child: BottomNavigationBar(
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(FlutterIcons.home_ant),
-                    title: Text('Home'),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(FlutterIcons.book_ant),
-                    title: Text('Khata'),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(FlutterIcons.shop_ent),
-                    title: Text('Business'),
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(FlutterIcons.setting_ant),
-                    title: Text('Settings'),
-                  ),
-                ],
-                unselectedItemColor: grey,
-                selectedItemColor: primaryColor,
-                currentIndex: _selectedIndex,
-                showUnselectedLabels: true,
-                onTap: _onItemTapped,
-                selectedIconTheme: IconThemeData(size: 40, color: primaryColor),
-              ),     
-          ),
-        ), 
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: new FloatingActionButton(
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          elevation: 2.0,
-          onPressed:(){  
-            Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: _widgetOptions.elementAt(4)));
-          },
-          tooltip: 'Chat with Mitra',
-          child: new Icon(FlutterIcons.chat_mco),
-        )
+      bottomNavigationBar: CurvedNavigationBar(
+        key: _bottomNavigationKey,
+        index: widget.index,
+        height: 50.0,
+        color: Colors.white,
+        buttonBackgroundColor: Colors.white,
+        backgroundColor: Colors.blueAccent,
+        animationCurve: Curves.easeInOut,
+        animationDuration: Duration(milliseconds: 400),
+        letIndexChange: (index) => true,
+        items: <Widget>[
+          Icon(FlutterIcons.home_ant),
+          Icon(FlutterIcons.book_ant),
+          Icon(FlutterIcons.chat_mco),
+          Icon(FlutterIcons.shop_ent),
+          Icon(FlutterIcons.setting_ant)
+        ],
+        onTap: _onItemTapped,
+      ),
     );
   }
 }
