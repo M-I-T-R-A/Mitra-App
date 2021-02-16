@@ -127,19 +127,10 @@ class _CategoriesState extends State<HomeScreen> {
                 ),
               ],
             ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 0.02 * h, horizontal: 0.04 * w),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryColor,
-                    blurRadius: 15.0,
-                    spreadRadius: -8
-                  ),
-                ],
-              ),
-              child: Card(
+            Card(
               margin: EdgeInsets.symmetric(vertical: 0.01 * h),
+              elevation: 5,
+              shadowColor: primaryColor,
               child: GestureDetector(
                 onTap: () => {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPicker(header: "Search in " + storeName)))
@@ -157,7 +148,6 @@ class _CategoriesState extends State<HomeScreen> {
                   )
                 ),
               ),
-            ),
             ),
             RaisedButton(
               onPressed: () async {

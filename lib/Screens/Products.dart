@@ -80,22 +80,13 @@ class _ProductsState extends State<Products> {
         ),
       body: Column(
         children: [
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 0.02 * h, horizontal: 0.04 * w),
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: primaryColor,
-                  blurRadius: 15.0,
-                  spreadRadius: -8
-                ),
-              ],
-            ),
-            child: Card(
+           Card(
               margin: EdgeInsets.symmetric(vertical: 0.01 * h),
+              elevation: 5,
+              shadowColor: primaryColor,
               child: GestureDetector(
                 onTap: () => {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPicker(header: "Search in " + widget.name))).then((value) => setStart(value))
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPicker(header: "Search in " + widget.name)))
                 },
                 child: Container(
                   width: 0.8 *  MediaQuery.of(context).size.width,
@@ -111,7 +102,6 @@ class _ProductsState extends State<Products> {
                 ),
               ),
             ),
-          ),
           _filteredProducts.length != 0 ? Expanded(
             child: ListView.builder(
               padding: EdgeInsets.only(top: 0),
