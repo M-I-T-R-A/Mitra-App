@@ -19,6 +19,12 @@ class BookLoanScreenState extends State<BookLoanScreen> {
   final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
   void register() async {
+    if (this._amount.text == '' ){
+      _btnController.error();
+      showToast("Check amount", Colors.grey[200], error);  
+      _btnController.reset();
+      return;
+    }
     Timer(Duration(seconds: 3), () async{
         String approval = await bookLoan(double.parse(_amount.text));
         _btnController.success();

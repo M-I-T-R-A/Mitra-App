@@ -1,3 +1,4 @@
+import 'package:Mitra/Screens/Business/LoanDetails.dart';
 import 'package:Mitra/Screens/Drawer.dart';
 import 'package:Mitra/Screens/Notifications.dart';
 import 'package:Mitra/constants.dart';
@@ -247,7 +248,14 @@ class _BusinessState extends State<BusinessScreen> {
                         width: 0.2 * w,
                       ),
                       RaisedButton(
-                        onPressed: () => {
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                                inheritTheme: true,
+                                ctx: context,
+                                type: PageTransitionType.leftToRightWithFade,
+                                child: LoanDetailsScreen(loan: currentLoan)));
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15)

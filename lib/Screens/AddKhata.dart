@@ -35,9 +35,25 @@ class _AddKhataState extends State<AddKhata> {
     print("init");
     init();
   }
+  
 final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
   void register() async {
+    
+    if (this.customerName == null || this.customerMobile == null || this.customerAmount == null ){
+      _btnController.error();
+      showToast("Check customer details field", Colors.grey[200], error);  
+      _btnController.reset();
+      return;
+    }
+
+    if (this.products.length == 0 ){
+      _btnController.error();
+      showToast("Seems you forgot to add products", Colors.grey[200], error);  
+      _btnController.reset();
+      return;
+    }
+
     Timer(Duration(seconds: 3), () async{
           Map<String, dynamic> data = {
             "customerName": customerName,

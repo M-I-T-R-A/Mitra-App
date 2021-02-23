@@ -335,6 +335,10 @@ class _KYCScreenState extends State<KYCScreen> {
                             RaisedButton(shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                               onPressed: () async{
+                                if (aadharNo == null){
+                                  showToast("Type PAN first", grey, error);
+                                  return;
+                                }
                                 path = await getImage();
                                 showToast("Uploading your documents, just a moment please...", grey, primaryColor);                                 
                                 // bool status = await panCardMatch(path, this.panNo);

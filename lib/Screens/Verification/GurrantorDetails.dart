@@ -50,6 +50,13 @@ class _GurrantorDetailsState extends State<GurrantorDetails> {
 final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
   void register() async {
+    if (this.name == null || this.mobileNumber == null ||  this.annualIncome == null || this.location.length == 1 || this.electricityBillAmount == null){
+      _btnController.error();
+      showToast("Check gurrantor details field", Colors.grey[200], error);  
+      _btnController.reset();
+      return;
+    }
+
     Timer(Duration(seconds: 3), () async{
       bool confirm = gurrantor.confirmation(context, electricityBill, aadharFront, aadharBack);
         if (confirm == true){

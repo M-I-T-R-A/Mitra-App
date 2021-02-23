@@ -1,3 +1,4 @@
+import 'package:Mitra/Services/Fluttertoast.dart';
 import 'package:Mitra/constants.dart';
 import "package:flutter/material.dart";
 import "dart:math";
@@ -196,12 +197,16 @@ class EMICalculatorScreenState extends State<EMICalculatorScreen> {
 
   void _handleCalculation() {
 
-    //  Amortization
-    //  A = Payemtn amount per period
-    //  P = Initial Printical (loan amount)
+    //  A = Payment amount per period
+    //  P = Initial Principal (loan amount)
     //  r = interest rate
     //  n = total number of payments or periods
+    print(_principalAmount.text);
 
+    if (_principalAmount.text == '' || this._interestRate.text == '' || this._tenure.text == '' ){
+      showToast("Check fields", Colors.grey[200], error);  
+      return;
+    }
     double A = 0.0;
     int P = int.parse(_principalAmount.text); 
     double r = int.parse(_interestRate.text) / 12 / 100;

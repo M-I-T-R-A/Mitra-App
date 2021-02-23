@@ -33,6 +33,14 @@ class AddProductScreenState extends State<AddProductScreen> {
   final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
   void purchase() async {
+    
+    if (this._productName.text == '' || this._productPrice.text == ''  || this._productDescription.text == ''  || this._productQuantity.text == ''  || this._productCategory.length == 0 ){
+      _btnController.error();
+      showToast("Check product details field", Colors.grey[200], error);  
+      _btnController.reset();
+      return;
+    }
+
     Timer(Duration(seconds: 3), () async{
       Product product = new Product(name: _productName.text, pricePerUnit: double.parse(_productPrice.text), unit: _productDescription.text, quantity: int.parse(_productQuantity.text), category: _productCategory);
       bool status = await addProduct(product);

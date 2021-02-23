@@ -25,6 +25,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
   void register() async {
+    if (this.firstName == null || this.lastName == null){
+      _btnController.error();
+      showToast("Check name field", Colors.grey[200], error);  
+      _btnController.reset();
+    }
     if (this.mobileNo.length != 10){
       _btnController.error();
       showToast("Mobile Number is not valid", Colors.grey[200], error);  

@@ -39,6 +39,13 @@ class _StoreDetailsState extends State<StoreDetails> {
 final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
   void register() async {
+    if (this.gstin == null || this.areaPerSqft == null || this.storeName == null ||  this.contactNumber == null || this.location.length == 1 || this.electricityBillAmount == null){
+      _btnController.error();
+      showToast("Check store details field", Colors.grey[200], error);  
+      _btnController.reset();
+      return;
+    }
+
     Timer(Duration(seconds: 3), () async{
         bool confirm = confirmation(context, electricityBill);
         if (confirm == true){

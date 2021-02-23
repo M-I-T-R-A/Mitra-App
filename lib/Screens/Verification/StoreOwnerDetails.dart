@@ -38,6 +38,13 @@ class _StoreOwnerDetailsState extends State<StoreOwnerDetails> {
   final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
   void register() async {
+    if (this.annualIncome == null  || this.location.length == 1 || this.electricityBillAmount == null){
+      _btnController.error();
+      showToast("Check store owner details field", Colors.grey[200], error);  
+      _btnController.reset();
+      return;
+    }
+
     Timer(Duration(seconds: 3), () async{
       bool confirm = confirmation(context, electricityBill);
         if (confirm == true){

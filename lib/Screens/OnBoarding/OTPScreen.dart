@@ -33,6 +33,13 @@ class _OTPScreenState extends State<OTPScreen> {
     final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
   void verify() async {
+    
+    if (this.smsOTP == null){
+      _btnController.error();
+      showToast("Check OTP field", Colors.grey[200], error);  
+      _btnController.reset();
+      return;
+    }
     LoginFunctions loginFunction = new LoginFunctions();  
     Timer(Duration(seconds: 3), () async{
       await loginFunctions.verifyOTP(errorMessage, context, smsOTP, mobileno, mode);

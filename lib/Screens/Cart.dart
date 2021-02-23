@@ -39,6 +39,13 @@ class _CartState extends State<Cart> {
   final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
   void purchase() async {
+    if (this.supplierName == null || this.supplierMobile == null || this.supplierBillURL == null ){
+      _btnController.error();
+      showToast("Check supplier details field", Colors.grey[200], error);  
+      _btnController.reset();
+      return;
+    }
+
     Timer(Duration(seconds: 3), () async{
         List<dynamic> products = await cs.getAll();
         bool status = await updateProduct(products, supplierName, supplierMobile, supplierBillURL, selectedDate.toLocal().toString().split(' ')[0]);
