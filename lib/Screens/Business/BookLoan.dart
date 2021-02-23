@@ -38,7 +38,7 @@ class BookLoanScreenState extends State<BookLoanScreen> {
           context,
           PageTransition(
               type: PageTransitionType.leftToRightWithFade,
-              child: Home(index:2)));
+              child: Home(index:3)));
       });
     }
 

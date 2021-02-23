@@ -91,6 +91,7 @@ class LoanDetailsScreenState extends State<LoanDetailsScreen> {
                 ]
               ),
               SizedBox(height: 15,),
+              widget.loan["approvedInstantLoan"] != null ? {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -169,7 +170,7 @@ class LoanDetailsScreenState extends State<LoanDetailsScreen> {
                     ))
                   )
                 ]
-              ),
+              ), }: Container()
             ],
           )
         )
