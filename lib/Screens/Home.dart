@@ -62,7 +62,7 @@ class _HomeState extends State<Home> {
         items: <Widget>[
           Icon(FlutterIcons.home_ant),
           Icon(FlutterIcons.book_ant),
-          Icon(FlutterIcons.chat_mco),
+          Icon(Icons.chat_bubble_outline),
           Icon(FlutterIcons.shop_ent),
           Icon(FlutterIcons.setting_ant)
         ],

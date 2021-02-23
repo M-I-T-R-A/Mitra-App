@@ -49,7 +49,7 @@ class NavigationDrawer extends StatelessWidget {
                 context,
                 PageTransition(
                     type: PageTransitionType.leftToRightWithFade,
-                    child: Home(index: 3))),
+                    child: Home(index: 4))),
          ),
          createDrawerBodyItem(
            icon: Icons.book,
@@ -65,6 +65,16 @@ class NavigationDrawer extends StatelessWidget {
          createDrawerBodyItem(
            icon: Icons.store_mall_directory_outlined,
            title: 'Your Store',
+           onTap: () =>
+               Navigator.pushReplacement(
+                context,
+                PageTransition(
+                    type: PageTransitionType.leftToRightWithFade,
+                    child: Home(index: 3))),
+         ),
+         createDrawerBodyItem(
+           icon: Icons.chat_bubble_outline,
+           title: 'Mitra Bot',
            onTap: () =>
                Navigator.pushReplacement(
                 context,
