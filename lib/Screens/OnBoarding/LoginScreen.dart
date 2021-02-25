@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
   void login() async {
-    if (this.mobileNo.length != 10){
+    if (this.mobileNo == null || this.mobileNo.length != 10){
       _btnController.error();
       showToast("Mobile Number is not valid", Colors.grey[200], error);  
       _btnController.reset();

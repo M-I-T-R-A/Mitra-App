@@ -31,7 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _btnController.reset();
       return;
     }
-    if (this.mobileNo.length != 10){
+    if (this.mobileNo == null || this.mobileNo.length != 10){
       _btnController.error();
       showToast("Mobile Number is not valid", Colors.grey[200], error);  
       _btnController.reset();
@@ -147,7 +147,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     else{
                                       SharedPreferences prefs = await SharedPreferences.getInstance();
                                       await prefs.setString('firstName', value);
+                                      setState(() {
+                                        firstName = value;
+                                      });
                                     }
+
                                   },
                                 ),
                               ),
@@ -199,6 +203,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     else{
                                       SharedPreferences prefs = await SharedPreferences.getInstance();
                                       await prefs.setString('lastName', value);
+                                      setState(() {
+                                        lastName = value;
+                                      });
                                     }
                                   },
                                 ),
