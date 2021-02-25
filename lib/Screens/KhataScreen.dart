@@ -211,12 +211,6 @@ class _KhataScreenState extends State<KhataScreen> {
                               fontSize: 20
                             )
                           ),
-                          subtitle: Text(this.khata[i].timeOfSell.toString(),
-                            style: TextStyle(
-                              fontSize: 12, 
-                              color: grey
-                            )
-                          ),
                           trailing: Text("₹ " + (this.khata[i].shopCustomer.creditAmount > 0 ? this.khata[i].shopCustomer.creditAmount.toString() : (-1*this.khata[i].shopCustomer.creditAmount).toString()),
                             style: TextStyle(
                               color: this.khata[i].shopCustomer.creditAmount > 0 ? success : error,
