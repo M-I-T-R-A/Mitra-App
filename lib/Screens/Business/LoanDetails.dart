@@ -91,86 +91,90 @@ class LoanDetailsScreenState extends State<LoanDetailsScreen> {
                 ]
               ),
               SizedBox(height: 15,),
-              widget.loan["approvedInstantLoan"] != null ? {
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              widget.loan["approvedInstantLoan"] != null ? 
+              Column(
                 children: <Widget>[
-                  Text("Approved Amount",
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: primaryColor,
-                      fontWeight: FontWeight.bold
-                    )
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text("Approved Amount",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold
+                        )
+                      ),
+                      Container(
+                        child: Text("₹ " + widget.loan["approvedInstantLoan"]["approvedAmount"].toString() ?? "NA",
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold
+                        ))
+                      )
+                    ]
                   ),
-                  Container(
-                    child: Text("₹ " + widget.loan["approvedInstantLoan"]["approvedAmount"].toString() ?? "NA",
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold
-                    ))
+                  SizedBox(height: 15,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text("Rate of Interest",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold
+                        )
+                      ),
+                      Container(
+                        child: Text(widget.loan["approvedInstantLoan"]["rateOfInterest"].toString() + ' %' ?? "NA",
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold
+                        ))
+                      )
+                    ]
+                  ),
+                  SizedBox(height: 15,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text("Time Factor",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold
+                        )
+                      ),
+                      Container(
+                        child: Text(widget.loan["approvedInstantLoan"]["timeFactor"].toString() ?? "NA",
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold
+                        ))
+                      )
+                    ]
+                  ),
+                  SizedBox(height: 15,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text("Time Period",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold
+                        )
+                      ),
+                      Container(
+                        child: Text(widget.loan["approvedInstantLoan"]["startDate"].toString() + ' - ' + widget.loan["approvedInstantLoan"]["startDate"].toString() ?? "NA",
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold
+                        ))
+                      )
+                    ]
                   )
                 ]
-              ),
-              SizedBox(height: 15,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Rate of Interest",
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: primaryColor,
-                      fontWeight: FontWeight.bold
-                    )
-                  ),
-                  Container(
-                    child: Text(widget.loan["approvedInstantLoan"]["rateOfInterest"].toString() + ' %' ?? "NA",
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold
-                    ))
-                  )
-                ]
-              ),
-              SizedBox(height: 15,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Time Factor",
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: primaryColor,
-                      fontWeight: FontWeight.bold
-                    )
-                  ),
-                  Container(
-                    child: Text(widget.loan["approvedInstantLoan"]["timeFactor"].toString() ?? "NA",
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold
-                    ))
-                  )
-                ]
-              ),
-              SizedBox(height: 15,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Time Period",
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: primaryColor,
-                      fontWeight: FontWeight.bold
-                    )
-                  ),
-                  Container(
-                    child: Text(widget.loan["approvedInstantLoan"]["startDate"].toString() + ' - ' + widget.loan["approvedInstantLoan"]["startDate"].toString() ?? "NA",
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold
-                    ))
-                  )
-                ]
-              ), }: Container()
+              ) : Container()
             ],
           )
         )
