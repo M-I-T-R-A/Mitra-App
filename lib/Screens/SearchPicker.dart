@@ -97,8 +97,8 @@ class _SearchPickerState extends State<SearchPicker> {
             ),
           ),
           FutureBuilder(
-            future: pattern.length < 4 && pattern.length % 2 == 0 ? null : getProductByName(pattern),
-            builder: (context, snapshot) => pattern.length < 4 && pattern.length % 2 == 0? Container() : 
+            future: pattern.length < 4 ? null : getProductByName(pattern),
+            builder: (context, snapshot) => pattern.length < 4 ? Container() : 
               snapshot.hasData ? Expanded(
                 child: ListView.builder(
                   itemBuilder: (context, index) => GestureDetector(

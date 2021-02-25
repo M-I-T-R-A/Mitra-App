@@ -235,7 +235,7 @@ class _CategoriesState extends State<HomeScreen> {
               ),
             ) : Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.45,
+                  height: MediaQuery.of(context).size.height * 0.46,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                         image: AssetImage("assets/images/filter.png"),

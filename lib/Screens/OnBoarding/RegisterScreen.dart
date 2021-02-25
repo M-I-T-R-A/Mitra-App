@@ -29,6 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _btnController.error();
       showToast("Check name field", Colors.grey[200], error);  
       _btnController.reset();
+      return;
     }
     if (this.mobileNo.length != 10){
       _btnController.error();
